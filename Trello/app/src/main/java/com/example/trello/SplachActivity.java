@@ -16,9 +16,6 @@ public class SplachActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splach);
         Intent i = new Intent(SplachActivity.this, IntroActivity.class);
         startActivity(i);
-        //finish();
-
-
-
+        finish();
     }
 }
