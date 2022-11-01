@@ -61,6 +61,7 @@ public class SignInActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                FirebaseUser user = mAuth.getCurrentUser();
                                 Toast.makeText(SignInActivity.this, "Welcome back!", Toast.LENGTH_SHORT).show();
                                 showMainActivity();
                             } else {
@@ -90,8 +91,7 @@ public class SignInActivity extends AppCompatActivity {
         //Init firebase auth
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
-            finish();
-            return;
+           showMainActivity();
         }
     }
 
