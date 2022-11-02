@@ -6,16 +6,15 @@ public class Board {
     private String name;
     private String image;
     private String createdby;
+    private ArrayList assignedto;
+    private String documentId;
+    private ArrayList taskList;
 
     public Board(String name, String mBoardImageURL, String mUserName, ArrayList assignedUsersArrayList) {
         this.name = name;
         this.image = image;
         this.createdby = createdby;
         this.assignedto = assignedto;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Board(String name, String image, String createdby, ArrayList assignedto, String documentId, ArrayList taskList) {
@@ -25,6 +24,10 @@ public class Board {
         this.assignedto = assignedto;
         this.documentId = documentId;
         this.taskList = taskList;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -71,7 +74,5 @@ public class Board {
         this.taskList = taskList;
     }
 
-    private ArrayList assignedto;
-    private String documentId;
-    private ArrayList taskList;
+
 }
