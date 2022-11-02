@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
+import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -53,7 +54,7 @@ public class CreateBoardActivity extends BaseActivity {
         if (mSelectedImageFileUri != null) {
             uploadBoardImage();
         } else {
-            showProgressDialog("Please wait");
+            //showProgressDialog("Please wait");
             createBoard();
         }
     }
@@ -143,7 +144,7 @@ public class CreateBoardActivity extends BaseActivity {
         ArrayList assignedUsersArrayList = new ArrayList();
         assignedUsersArrayList.add(getCurrentUserID());
         Board board = new Board(et_board_name.getText().toString(), mBoardImageURL, mUserName, assignedUsersArrayList);
-//        FirestoreClass().createBoard(this, board);
+        FirestoreClass.createBoard(this, board);
     }
 
     public final void boardCreatedSuccessfully() {
