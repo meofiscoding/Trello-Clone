@@ -2,11 +2,10 @@ package com.example.trello;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,14 +20,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Objects;
-
 public class SignInActivity extends AppCompatActivity {
     private String email;
     private String password;
     private Button signin;
-    private EditText txtEmail;
-    private EditText txtPwd;
+    private EditText edtEmail;
+    private EditText edtPwd;
+    private TextView txtForgotPwd;
     //Firebase init
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
@@ -39,21 +37,27 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
         bindingView();
         bindingAction();
-        initFirebase();
+        mAuth = FirebaseAuth.getInstance();
         setuptoolbar();
     }
 
     private void bindingAction() {
         signin.setOnClickListener(this::onSigninClick);
+        txtForgotPwd.setOnClickListener(this::onForgotPwdClick);
+    }
+
+    private void onForgotPwdClick(View view) {
+        Intent intent = new Intent(this,ForgotPassword.class);
+        startActivity(intent);
     }
 
     private void onSigninClick(View view) {
         //Get text in form
-        email = txtEmail.getText().toString();
-        password = txtPwd.getText().toString();
+        email = edtEmail.getText().toString();
+        password = edtPwd.getText().toString();
         //validate form
         if (email.isEmpty() || password.isEmpty()){
-            Toast.makeText(this,"Please fill all the fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.ValidateForm, Toast.LENGTH_SHORT).show();
         }else{
             //Authentication with Firebase
             mAuth.signInWithEmailAndPassword(email, password)
@@ -82,17 +86,10 @@ public class SignInActivity extends AppCompatActivity {
 
     private void bindingView() {
         toolbar = findViewById(R.id.toolbar_sign_in_activity);
-        txtEmail = findViewById(R.id.et_email);
-        txtPwd = findViewById(R.id.et_password);
+        edtEmail = findViewById(R.id.edtEmail);
+        edtPwd = findViewById(R.id.edtPwd);
         signin = findViewById(R.id.btn_sign_in);
-    }
-
-    private void initFirebase() {
-        //Init firebase auth
-        mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null) {
-           showMainActivity();
-        }
+        txtForgotPwd = findViewById(R.id.txtForgotPwd);
     }
 
     private void setuptoolbar() {

@@ -13,7 +13,6 @@ public class IntroActivity extends AppCompatActivity {
    private Button signup;
 
     private void bindingView(){
-        SharedPreferences pref = getSharedPreferences("MyPref",  MODE_PRIVATE);
         signin=findViewById(R.id.btn_sign_in_intro);
         signup=findViewById(R.id.btn_sign_up_intro);
     }

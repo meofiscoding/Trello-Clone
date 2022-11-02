@@ -11,7 +11,7 @@
     <string name="name">Name</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
-
+    <string name="forgotPwd"><u>Forgot Password?</u></string>
     <string name="sign_in_description_text">Enter your name, email id and password, to register with us.</string>
 
     <string name="please_click_back_again_to_exit">Please click back again to exit.</string>
@@ -62,4 +62,5 @@
 
 
     <string name="default_notification_channel_id">projemanag_notification_channel_id</string>
+    <string name="ValidateForm">Please fill all the fields</string>
 </resources>

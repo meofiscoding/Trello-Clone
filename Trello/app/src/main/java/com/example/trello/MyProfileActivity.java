@@ -7,7 +7,6 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.trello.R;
 import com.example.trello.model.User;
 
 public class MyProfileActivity extends AppCompatActivity {
@@ -20,7 +19,7 @@ public class MyProfileActivity extends AppCompatActivity {
     private void bindingView(){
         SharedPreferences pref = getSharedPreferences("MyPref",  MODE_PRIVATE);
         image=findViewById(R.id.iv_profile_user_image);
-        name=findViewById(R.id.et_name);
+        name=findViewById(R.id.edtName);
         moblie=findViewById(R.id.et_mobile);
     }
     private void bindingAction(){
