@@ -38,7 +38,7 @@ public class ForgotPassword extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        Intent intent = new Intent(this, SignInActivity.class);
+        Intent intent = new Intent(this, PasswordUpdated.class);
         startActivity(intent);
     }
 
