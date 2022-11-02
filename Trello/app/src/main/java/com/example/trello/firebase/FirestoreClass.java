@@ -5,6 +5,9 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.example.trello.CardDetailsActivity;
 import com.example.trello.Constants;
 import com.example.trello.CreateBoardActivity;
 import com.example.trello.MainActivity;
@@ -131,167 +134,85 @@ public class FirestoreClass {
                 });
     }
 
-//    public final void getBoardsList(@NotNull final MainActivity activity) {
-//        Intrinsics.checkParameterIsNotNull(activity, "activity");
-//        this.mFireStore.collection("boards").whereArrayContains("assignedTo", this.getCurrentUserID()).get().addOnSuccessListener((OnSuccessListener)(new OnSuccessListener() {
-//            // $FF: synthetic method
-//            // $FF: bridge method
-//            public void onSuccess(Object var1) {
-//                this.onSuccess((QuerySnapshot)var1);
-//            }
-//
-//            public final void onSuccess(QuerySnapshot document) {
-//                String var10000 = activity.getClass().getSimpleName();
-//                Intrinsics.checkExpressionValueIsNotNull(document, "document");
-//                Log.e(var10000, document.getDocuments().toString());
-//                ArrayList boardsList = new ArrayList();
-//                Iterator var4 = document.getDocuments().iterator();
-//
-//                while(var4.hasNext()) {
-//                    DocumentSnapshot i = (DocumentSnapshot)var4.next();
-//                    Object var6 = i.toObject(Board.class);
-//                    if (var6 == null) {
-//                        Intrinsics.throwNpe();
-//                    }
-//
-//                    Intrinsics.checkExpressionValueIsNotNull(var6, "i.toObject(Board::class.java)!!");
-//                    Board board = (Board)var6;
-//                    Intrinsics.checkExpressionValueIsNotNull(i, "i");
-//                    String var10001 = i.getId();
-//                    Intrinsics.checkExpressionValueIsNotNull(var10001, "i.id");
-//                    board.setDocumentId(var10001);
-//                    boardsList.add(board);
-//                }
-//
-//                activity.populateBoardsListToUI(boardsList);
-//            }
-//        })).addOnFailureListener((OnFailureListener)(new OnFailureListener() {
-//            public final void onFailure(@NotNull Exception e) {
-//                Intrinsics.checkParameterIsNotNull(e, "e");
-//                activity.hideProgressDialog();
-//                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-//            }
-//        }));
-//    }
+    public static ArrayList<Board> getBoardsList(MainActivity activity) {
+        ArrayList<Board> boardsList = new ArrayList<>();
+        mFireStore.collection(Constants.BOARDS).whereArrayContains(Constants.ASSIGNED_TO,getCurrentUserID()).get().addOnSuccessListener(document->{
 
-    public final void getBoardDetails(@NotNull final TaskListActivity activity, @NotNull String documentId) {
-        Intrinsics.checkParameterIsNotNull(activity, "activity");
-        Intrinsics.checkParameterIsNotNull(documentId, "documentId");
-        this.mFireStore.collection("boards").document(documentId).get().addOnSuccessListener((OnSuccessListener)(new OnSuccessListener() {
-            // $FF: synthetic method
-            // $FF: bridge method
-            public void onSuccess(Object var1) {
-                this.onSuccess((DocumentSnapshot)var1);
+            Iterator i = document.getDocuments().iterator();
+            while (i.hasNext()){
+                DocumentSnapshot documentSnapshot = (DocumentSnapshot) i.next();
+                Board board = documentSnapshot.toObject(Board.class);
+                board.setDocumentId(documentSnapshot.getId());
+                boardsList.add(board);
             }
+        });
 
-            public final void onSuccess(DocumentSnapshot document) {
-                Log.e(activity.getClass().getSimpleName(), document.toString());
-                Object var10000 = document.toObject(Board.class);
-                if (var10000 == null) {
-                    Intrinsics.throwNpe();
-                }
-
-                Intrinsics.checkExpressionValueIsNotNull(var10000, "document.toObject(Board::class.java)!!");
-                Board board = (Board)var10000;
-                Intrinsics.checkExpressionValueIsNotNull(document, "document");
-                String var10001 = document.getId();
-                Intrinsics.checkExpressionValueIsNotNull(var10001, "document.id");
-                board.setDocumentId(var10001);
-                activity.boardDetails(board);
-            }
-        })).addOnFailureListener((OnFailureListener)(new OnFailureListener() {
-            public final void onFailure(@NotNull Exception e) {
-                Intrinsics.checkParameterIsNotNull(e, "e");
-                activity.hideProgressDialog();
-                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-            }
-        }));
     }
 
-//    public final void addUpdateTaskList(@NotNull final Activity activity, @NotNull Board board) {
-//        Intrinsics.checkParameterIsNotNull(activity, "activity");
-//        Intrinsics.checkParameterIsNotNull(board, "board");
-//        HashMap taskListHashMap = new HashMap();
-//        ((Map)taskListHashMap).put("taskList", board.getTaskList());
-//        this.mFireStore.collection("boards").document(board.getDocumentId()).update((Map)taskListHashMap).addOnSuccessListener((OnSuccessListener)(new OnSuccessListener() {
-//            // $FF: synthetic method
-//            // $FF: bridge method
-//            public void onSuccess(Object var1) {
-//                this.onSuccess((Void)var1);
-//            }
-//
-//            public final void onSuccess(Void it) {
-//                Log.e(activity.getClass().getSimpleName(), "TaskList updated successfully.");
-//                if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).addUpdateTaskListSuccess();
-//                } else if (activity instanceof CardDetailsActivity) {
-//                    ((CardDetailsActivity)activity).addUpdateTaskListSuccess();
-//                }
-//
-//            }
-//        })).addOnFailureListener((OnFailureListener)(new OnFailureListener() {
-//            public final void onFailure(@NotNull Exception e) {
-//                Intrinsics.checkParameterIsNotNull(e, "e");
-//                if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).hideProgressDialog();
-//                } else if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).hideProgressDialog();
-//                }
-//
-//                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-//            }
-//        }));
-//    }
+    public static final void getBoardDetails(@NotNull final TaskListActivity activity, @NotNull String documentId) {
+        mFireStore.collection(Constants.BOARDS).document(documentId).get().addOnSuccessListener(document->{
+            Board board = document.toObject(Board.class);
+            board.setDocumentId(document.getId());
+            activity.boardDetails(board);
+        }).addOnFailureListener(e->{
+            activity.hideProgressDialog();
+            Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", e);
+        });
+    }
 
-//    public final void getAssignedMembersListDetails(@NotNull final Activity activity, @NotNull ArrayList assignedTo) {
-//        Intrinsics.checkParameterIsNotNull(activity, "activity");
-//        Intrinsics.checkParameterIsNotNull(assignedTo, "assignedTo");
-//        this.mFireStore.collection("users").whereIn("id", (List)assignedTo).get().addOnSuccessListener((OnSuccessListener)(new OnSuccessListener() {
-//            // $FF: synthetic method
-//            // $FF: bridge method
-//            public void onSuccess(Object var1) {
-//                this.onSuccess((QuerySnapshot)var1);
+    public static final void addUpdateTaskList(@NotNull final Activity activity, @NotNull Board board) {
+        HashMap taskListHashMap = new HashMap();
+        taskListHashMap.put(Constants.TASK_LIST,board.getTaskList());
+        mFireStore.collection(Constants.BOARDS).document(board.getDocumentId()).update(taskListHashMap).addOnSuccessListener(new OnSuccessListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if(activity instanceof TaskListActivity){
+                    ((TaskListActivity) activity).addUpdateTaskListSuccess();
+                }else if (activity instanceof CardDetailsActivity){
+                    ((CardDetailsActivity) activity).addUpdateTaskListSuccess();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (activity instanceof TaskListActivity) {
+                    ((TaskListActivity)activity).hideProgressDialog();
+                } else if (activity instanceof TaskListActivity) {
+                    ((TaskListActivity)activity).hideProgressDialog();
+                }
+
+                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+            }
+        });
+
+    }
+
+    public final void getAssignedMembersListDetails(@NotNull final Activity activity, @NotNull ArrayList assignedTo) {
+        mFireStore.collection(Constants.USERS).whereIn(Constants.ID,assignedTo).get().addOnSuccessListener(document->{
+            ArrayList<User> usersList = new ArrayList<>();
+            Iterator i = document.getDocuments().iterator();
+            while (i.hasNext()){
+                DocumentSnapshot documentSnapshot = (DocumentSnapshot) i.next();
+                User user = documentSnapshot.toObject(User.class);
+                usersList.add(user);
+            }
+//FIXME
+//            if (activity instanceof MembersActivity) {
+//                ((MembersActivity)activity).setupMembersList(usersList);
+//            } else if (activity instanceof TaskListActivity) {
+//                ((TaskListActivity)activity).boardMembersDetailList(usersList);
 //            }
-//
-//            public final void onSuccess(QuerySnapshot document) {
-//                String var10000 = activity.getClass().getSimpleName();
-//                Intrinsics.checkExpressionValueIsNotNull(document, "document");
-//                Log.e(var10000, document.getDocuments().toString());
-//                ArrayList usersList = new ArrayList();
-//                Iterator var4 = document.getDocuments().iterator();
-//
-//                while(var4.hasNext()) {
-//                    DocumentSnapshot i = (DocumentSnapshot)var4.next();
-//                    Object var6 = i.toObject(User.class);
-//                    if (var6 == null) {
-//                        Intrinsics.throwNpe();
-//                    }
-//
-//                    Intrinsics.checkExpressionValueIsNotNull(var6, "i.toObject(User::class.java)!!");
-//                    User user = (User)var6;
-//                    usersList.add(user);
-//                }
-//
-//                if (activity instanceof MembersActivity) {
-//                    ((MembersActivity)activity).setupMembersList(usersList);
-//                } else if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).boardMembersDetailList(usersList);
-//                }
-//
+        }).addOnFailureListener(e->{
+//            if (activity instanceof MembersActivity) {
+//                ((MembersActivity)activity).hideProgressDialog();
+//            } else if (activity instanceof TaskListActivity) {
+//                ((TaskListActivity)activity).hideProgressDialog();
 //            }
-//        })).addOnFailureListener((OnFailureListener)(new OnFailureListener() {
-//            public final void onFailure(@NotNull Exception e) {
-//                Intrinsics.checkParameterIsNotNull(e, "e");
-//                if (activity instanceof MembersActivity) {
-//                    ((MembersActivity)activity).hideProgressDialog();
-//                } else if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).hideProgressDialog();
-//                }
-//
-//                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-//            }
-//        }));
-//    }
+
+            Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+        });
+
+    }
 
 //    public final void getMemberDetails(@NotNull final MembersActivity activity, @NotNull String email) {
 //        Intrinsics.checkParameterIsNotNull(activity, "activity");

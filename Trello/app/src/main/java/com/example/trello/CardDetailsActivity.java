@@ -138,8 +138,7 @@ public class CardDetailsActivity extends BaseActivity {
         taskList.remove(taskList.size()-1);
         ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().set(this.mCardPosition, card);
         //showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass().addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
+        FirestoreClass.addUpdateTaskList(this, mBoardDetails);
     }
 
     private final void deleteCard() {
@@ -149,8 +148,7 @@ public class CardDetailsActivity extends BaseActivity {
         taskList.remove(taskList.size()-1);
         ((Task)taskList.get(this.mTaskListPosition)).setCards(cardsList);
         //showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass.addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
+        FirestoreClass.addUpdateTaskList(this, mBoardDetails);
     }
 
     private final void alertDialogForDeleteCard(String cardName) {
