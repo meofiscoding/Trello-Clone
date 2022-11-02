@@ -32,6 +32,11 @@
             android:name=".MyProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".TaskListActivity"
+            android:exported="false" >
+
+        </activity>
+        <activity
             android:name=".SplachActivity"
             android:exported="false">
 

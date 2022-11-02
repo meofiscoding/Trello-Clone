@@ -2,6 +2,7 @@ package com.example.trello.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.trello.MyProfileActivity;
 import com.example.trello.R;
+import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +57,9 @@ public class BoardItemsAdapter extends RecyclerView.Adapter<BoardItemsAdapter.My
         holder.boardname.setText(list.get(position).getName());
         holder.boardcreated.setText(list.get(position).getCreatedby());
 
+
     }
+
 
 
     @Override
@@ -62,7 +67,7 @@ public class BoardItemsAdapter extends RecyclerView.Adapter<BoardItemsAdapter.My
         return list.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements OnClickListener{
         public ImageView boardImage;
         public TextView boardname;
         public TextView boardcreated;
@@ -73,13 +78,19 @@ public class BoardItemsAdapter extends RecyclerView.Adapter<BoardItemsAdapter.My
             boardcreated=view.findViewById(R.id.tv_created_by);
 
 
+
+        }
+
+        @Override
+        public void onClick(View view, int positopn) {
+            var a=list.get(positopn);
         }
     }
     public void setOnClickListener(OnClickListener onClickListener){
         this.onClickListener = onClickListener;
     }
 
-    interface OnClickListener {
-        void onClick(int position,Board model);
+    public interface OnClickListener {
+        void onClick(View view,int  positopn);
     }
 }
