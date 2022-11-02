@@ -1,6 +1,5 @@
 package com.example.trello.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,33 +9,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.view.menu.MenuView;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.trello.MyProfileActivity;
+import com.example.trello.Constants;
 import com.example.trello.R;
 import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
+import com.example.trello.onItemClick;
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-import kotlin.jvm.internal.Intrinsics;
 
 public class BoardItemsAdapter extends RecyclerView.Adapter<BoardItemsAdapter.MyViewHolder> {
-
-    private BoardItemsAdapter.OnClickListener onClickListener;
+    private onItemClick itemClick;
     private Context context;
     private ArrayList<Board> list;
 
-    public BoardItemsAdapter(Context context, ArrayList<Board> list) {
+    public BoardItemsAdapter(Context context, ArrayList<Board> list, onItemClick onItemClick) {
         this.context = context;
         this.list = list;
+        this.itemClick = onItemClick;
     }
 
     @NonNull
@@ -56,41 +51,31 @@ public class BoardItemsAdapter extends RecyclerView.Adapter<BoardItemsAdapter.My
                 .into(holder.boardImage);
         holder.boardname.setText(list.get(position).getName());
         holder.boardcreated.setText(list.get(position).getCreatedby());
-
-
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClick.onItemClicked(list.get(position));
+            }
+        });
     }
-
-
 
     @Override
     public int getItemCount() {
         return list.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements OnClickListener{
+    public class MyViewHolder extends RecyclerView.ViewHolder{
         public ImageView boardImage;
         public TextView boardname;
         public TextView boardcreated;
+        public CardView cardView;
         public MyViewHolder(@NotNull View view) {
             super(view);
             boardImage= view.findViewById(R.id.iv_board_image);
             boardname=view.findViewById(R.id.tv_name);
             boardcreated=view.findViewById(R.id.tv_created_by);
-
-
-
+            cardView = view.findViewById(R.id.board_container);
         }
 
-        @Override
-        public void onClick(View view, int positopn) {
-            var a=list.get(positopn);
-        }
-    }
-    public void setOnClickListener(OnClickListener onClickListener){
-        this.onClickListener = onClickListener;
-    }
-
-    public interface OnClickListener {
-        void onClick(View view,int  positopn);
     }
 }

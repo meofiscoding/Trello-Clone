@@ -41,10 +41,10 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_board, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_task, parent, false);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) ((double) parent.getWidth() * 0.7D), -2);
         // Here the dynamic margins are applied to the view.
-        view.setLayoutParams((android.view.ViewGroup.LayoutParams) layoutParams);
+//        view.setLayoutParams((android.view.ViewGroup.LayoutParams) layoutParams);
         return new TaskListItemsAdapter.TaskViewHolder(view);
     }
 
@@ -280,7 +280,6 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             tv_add_task_list = itemView.findViewById(R.id.et_card_name);
             ib_done_card_name = itemView.findViewById(R.id.ib_done_card_name);
             tv_add_card = itemView.findViewById(R.id.tv_add_card);
-
         }
     }
 }

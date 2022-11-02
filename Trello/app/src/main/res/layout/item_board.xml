@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/item_board_content_marginBottom"
+    android:id="@+id/board_container"
     android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
@@ -54,4 +57,4 @@
         android:layout_marginTop="@dimen/item_board_divider_marginTop"
         android:background="@color/divider_color" />
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>
