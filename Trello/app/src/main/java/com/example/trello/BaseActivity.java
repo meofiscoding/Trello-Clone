@@ -53,7 +53,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         }, 2000);
     }
-
+//FIXME
 //    public void showErrorSnackBar(String message){
 //        Snackbar snackbar = Snackbar.make(findViewById(R.id.content),message,Snackbar.LENGTH_LONG);
 //        View snackbarView = snackbar.getView();
