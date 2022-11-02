@@ -1,6 +1,7 @@
 package com.example.trello;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,8 @@ public class SignUpActivity extends AppCompatActivity {
     // [START declare_auth]
     private FirebaseAuth mAuth;
     // [END declare_auth]
+    private ProgressDialog progressDialog;
+
 
     private void setuptoolbar() {
         setSupportActionBar(toolbar);
@@ -72,12 +75,14 @@ public class SignUpActivity extends AppCompatActivity {
         String name = edtName.getText().toString();
 
         if (validateField(email, password, name)) {
+            progressDialog.show();
             // [START create_user_with_email]
             mAuth.createUserWithEmailAndPassword(email.trim(), password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                progressDialog.dismiss();
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 mAuth.sendSignInLinkToEmail(email, buildActionCodeSettings())
@@ -150,5 +155,6 @@ public class SignUpActivity extends AppCompatActivity {
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPwd);
+        progressDialog = new ProgressDialog(this);
     }
 }

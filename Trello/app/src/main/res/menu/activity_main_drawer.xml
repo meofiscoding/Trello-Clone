@@ -5,15 +5,31 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_nav_user"
-            android:title="@string/nav_my_profile" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_baseline_settings_24"
-            android:title="@string/setting" />
+            android:icon="@drawable/trelloboard"
+            android:title="@string/board" />
     </group>
+    <item android:title="@string/workspace">
+        <menu>
+            <item
+                android:id="@+id/nav_workspace"
+                android:icon="@drawable/ic_outline_group_24"
+                android:title="WorkSpace1" />
+        </menu>
+    </item>
+    <item android:title="My Setting">
+        <menu>
+            <item
+                android:id="@+id/nav_myCard"
+                android:icon="@drawable/ic_baseline_credit_card_24"
+                android:title="@string/my_cards" />
+            <item
+                android:id="@+id/nav_slideshow"
+                android:icon="@drawable/ic_baseline_settings_24"
+                android:title="@string/setting" />
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/ic_nav_user"
+                android:title="@string/nav_my_profile" />
+        </menu>
+    </item>
 </menu>

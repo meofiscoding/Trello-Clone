@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.bumptech.glide.Glide;
 import com.example.trello.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -36,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Toolbar toolbar;
     private FloatingActionButton fabCreate, fabCreateCard, fabCreateBoard;
+    private ImageView imgAvatar;
+    private TextView txtUserName;
+    private TextView txtEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +61,13 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_profile, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        showUserInfo();
     }
 
     private void bindingAction() {
@@ -86,6 +93,20 @@ public class MainActivity extends AppCompatActivity {
         toBottom = AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim);
     }
 
+    private void showUserInfo() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            if (user.getDisplayName().isEmpty()) {
+                txtUserName.setVisibility(View.GONE);
+            } else {
+                txtUserName.setVisibility(View.VISIBLE);
+                txtUserName.setText(user.getDisplayName());
+            }
+            txtEmail.setText(user.getEmail());
+            Glide.with(this).load(user.getPhotoUrl()).error(R.drawable.ic_baseline_supervised_user_circle_24).into(imgAvatar);
+        }
+    }
+
     private void bindingView() {
         drawer = binding.drawerLayout;
         navigationView = binding.navView;
@@ -93,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
         fabCreate = binding.appBarMain.fabCreate;
         fabCreateBoard = binding.appBarMain.fabCreateBoard;
         fabCreateCard = binding.appBarMain.fabCreateCard;
+        imgAvatar = binding.navView.getHeaderView(0).findViewById(R.id.imgAvatar);
+        txtUserName = binding.navView.getHeaderView(0).findViewById(R.id.txtUserName);
+        txtEmail = binding.navView.getHeaderView(0).findViewById(R.id.txtEmail);
     }
 
     private void setClickableOfFabs(boolean isFabClicked) {
