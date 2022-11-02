@@ -22,6 +22,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreateBoardActivity extends BaseActivity {
+    private FirebaseAuth mAuth;
     private Uri mSelectedImageFileUri;
     private String mUserName;
     private String mBoardImageURL = "";
@@ -78,6 +81,9 @@ public class CreateBoardActivity extends BaseActivity {
         if (this.getIntent().hasExtra("name")) {
             mUserName = this.getIntent().getStringExtra("name");
         }
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        mUserName = user.getDisplayName();
 
 
         bindingAction();
