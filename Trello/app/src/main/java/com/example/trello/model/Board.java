@@ -10,11 +10,11 @@ public class Board {
     private String documentId;
     private ArrayList taskList;
 
-    public Board(String name, String mBoardImageURL, String mUserName, ArrayList assignedUsersArrayList) {
+    public Board(String name, String image, String createdby, ArrayList assignedUsersArrayList) {
         this.name = name;
         this.image = image;
         this.createdby = createdby;
-        this.assignedto = assignedto;
+        this.assignedto = assignedUsersArrayList;
     }
 
     public Board(String name, String image, String createdby, ArrayList assignedto, String documentId, ArrayList taskList) {
