@@ -29,6 +29,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.trello.databinding.ActivityMainBinding;
@@ -38,8 +40,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.io.IOException;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -186,18 +188,47 @@ public class MainActivity extends AppCompatActivity {
             fabCreateCard.setVisibility(View.INVISIBLE);
         }
     }
+    public void populateBoardsListToUI(ArrayList<Board> boardsList) {
+
+        //hideProgressDialog()
+
+        if (boardsList.size() > 0) {
+
+            rv_boards_list.setVisibility(View.VISIBLE);
+            tv_no_boards_available.setVisibility(View.GONE);
+
+            rv_boards_list.setLayoutManager(new LinearLayoutManager(this));
+            rv_boards_list.setHasFixedSize(true);
+
+            // Create an instance of BoardItemsAdapter and pass the boardList to it.
+            BoardItemsAdapter adapter = new BoardItemsAdapter(MainActivity.this, boardsList);
+            rv_boards_list.setAdapter(adapter);  // Attach the adapter to the recyclerView.
+
+//            adapter.setOnClickListener( :
+//            BoardItemsAdapter.OnClickListener {
+//                override fun onClick(position: Int, model: Board) {
+//                    val intent = Intent(this@MainActivity, TaskListActivity::class.java)
+//                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+//                    startActivity(intent)
+//                }
+//            })
+        } else {
+            rv_boards_list.setVisibility(View.GONE);
+            tv_no_boards_available.setVisibility(View.VISIBLE);
+        }
+    }
 
     // [START on_start_check_user]
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            startActivity(new Intent(this, SplachActivity.class));
-        } else {
-            Toast.makeText(this, "Welcome " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
-        }
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser == null) {
+//            startActivity(new Intent(this, SplachActivity.class));
+//        } else {
+//            Toast.makeText(this, "Welcome " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
+//        }
     }
     // [END on_start_check_user]
 

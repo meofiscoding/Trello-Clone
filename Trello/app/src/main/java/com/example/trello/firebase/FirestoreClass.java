@@ -15,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 public class FirestoreClass {
-    private final FirebaseFirestore mFireStore = FirebaseFirestore.getInstance();
+    private static final FirebaseFirestore mFireStore = FirebaseFirestore.getInstance();
     //FIXME
 //    public final void registerUser(@NotNull final SignUpActivity activity, @NotNull User userInfo) {
 //        Intrinsics.checkParameterIsNotNull(activity, "activity");
@@ -97,7 +97,7 @@ public class FirestoreClass {
 //        }));
 //    }
 
-    public final void createBoard(CreateBoardActivity activity, Board board) {
+    public static final void createBoard(CreateBoardActivity activity, Board board) {
         mFireStore.collection(Constants.BOARDS).document().set(board, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
