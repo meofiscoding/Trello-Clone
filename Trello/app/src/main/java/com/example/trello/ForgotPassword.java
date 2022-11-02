@@ -36,8 +36,8 @@ public class ForgotPassword extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onRestart() {
+        super.onRestart();
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
