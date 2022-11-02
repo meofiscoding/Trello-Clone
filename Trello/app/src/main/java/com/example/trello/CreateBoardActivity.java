@@ -41,6 +41,7 @@ public class CreateBoardActivity extends BaseActivity {
         toolbar=findViewById(R.id.toolbar_create_board_activity);
         circleImageView = findViewById(R.id.iv_board_image);
         et_board_name = findViewById(R.id.et_board_name);
+        btn_create = findViewById(R.id.btn_create);
     }
 
     private void bindingAction(){
@@ -70,13 +71,14 @@ public class CreateBoardActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_board);
+        bindingView();
         setupActionBar();
 
         if(this.getIntent().hasExtra("name")){
             mUserName = this.getIntent().getStringExtra("name");
         }
 
-        bindingView();
+
         bindingAction();
     }
 
