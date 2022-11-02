@@ -10,7 +10,7 @@ import com.example.trello.CreateBoardActivity;
 import com.example.trello.MainActivity;
 import com.example.trello.MyProfileActivity;
 import com.example.trello.SignInActivity;
-import com.example.trello.TaskListActivity;
+//import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
 import com.example.trello.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -174,39 +174,39 @@ public class FirestoreClass {
 //        }));
 //    }
 
-    public final void getBoardDetails(@NotNull final TaskListActivity activity, @NotNull String documentId) {
-        Intrinsics.checkParameterIsNotNull(activity, "activity");
-        Intrinsics.checkParameterIsNotNull(documentId, "documentId");
-        this.mFireStore.collection("boards").document(documentId).get().addOnSuccessListener((OnSuccessListener)(new OnSuccessListener() {
-            // $FF: synthetic method
-            // $FF: bridge method
-            public void onSuccess(Object var1) {
-                this.onSuccess((DocumentSnapshot)var1);
-            }
-
-            public final void onSuccess(DocumentSnapshot document) {
-                Log.e(activity.getClass().getSimpleName(), document.toString());
-                Object var10000 = document.toObject(Board.class);
-                if (var10000 == null) {
-                    Intrinsics.throwNpe();
-                }
-
-                Intrinsics.checkExpressionValueIsNotNull(var10000, "document.toObject(Board::class.java)!!");
-                Board board = (Board)var10000;
-                Intrinsics.checkExpressionValueIsNotNull(document, "document");
-                String var10001 = document.getId();
-                Intrinsics.checkExpressionValueIsNotNull(var10001, "document.id");
-                board.setDocumentId(var10001);
-                activity.boardDetails(board);
-            }
-        })).addOnFailureListener((OnFailureListener)(new OnFailureListener() {
-            public final void onFailure(@NotNull Exception e) {
-                Intrinsics.checkParameterIsNotNull(e, "e");
-                activity.hideProgressDialog();
-                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-            }
-        }));
-    }
+//    public final void getBoardDetails(@NotNull final TaskListActivity activity, @NotNull String documentId) {
+//        Intrinsics.checkParameterIsNotNull(activity, "activity");
+//        Intrinsics.checkParameterIsNotNull(documentId, "documentId");
+//        this.mFireStore.collection("boards").document(documentId).get().addOnSuccessListener((OnSuccessListener)(new OnSuccessListener() {
+//            // $FF: synthetic method
+//            // $FF: bridge method
+//            public void onSuccess(Object var1) {
+//                this.onSuccess((DocumentSnapshot)var1);
+//            }
+//
+//            public final void onSuccess(DocumentSnapshot document) {
+//                Log.e(activity.getClass().getSimpleName(), document.toString());
+//                Object var10000 = document.toObject(Board.class);
+//                if (var10000 == null) {
+//                    Intrinsics.throwNpe();
+//                }
+//
+//                Intrinsics.checkExpressionValueIsNotNull(var10000, "document.toObject(Board::class.java)!!");
+//                Board board = (Board)var10000;
+//                Intrinsics.checkExpressionValueIsNotNull(document, "document");
+//                String var10001 = document.getId();
+//                Intrinsics.checkExpressionValueIsNotNull(var10001, "document.id");
+//                board.setDocumentId(var10001);
+//                activity.boardDetails(board);
+//            }
+//        })).addOnFailureListener((OnFailureListener)(new OnFailureListener() {
+//            public final void onFailure(@NotNull Exception e) {
+//                Intrinsics.checkParameterIsNotNull(e, "e");
+//                activity.hideProgressDialog();
+//                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+//            }
+//        }));
+//    }
 
 //    public final void addUpdateTaskList(@NotNull final Activity activity, @NotNull Board board) {
 //        Intrinsics.checkParameterIsNotNull(activity, "activity");

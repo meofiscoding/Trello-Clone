@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,6 +17,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.trello.databinding.ActivityMainBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private Animation rotateOpen, rotateClose, fromBottom, toBottom;
     private boolean isFabClicked;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
+    private FloatingActionButton fabCreate, fabCreateCard, fabCreateBoard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,33 +47,11 @@ public class MainActivity extends AppCompatActivity {
         // [END initialize_auth]
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        bindingView();
+        bindingAction();
         //load animation
-        rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open_anim);
-        rotateClose = AnimationUtils.loadAnimation(this, R.anim.rotate_close_anim);
-        fromBottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom_anim);
-        toBottom = AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim);
-
-        setSupportActionBar(binding.appBarMain.toolbar);
-        //set onclick to FAB Create Board
-        binding.appBarMain.fabCreateBoard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, CreateBoardActivity.class));
-            }
-        });
-        //set onClick to fab Create
-        binding.appBarMain.fabCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isFabClicked = !isFabClicked;
-                setVisibilityOfFabs(isFabClicked);
-                setAnimationOfFabs(isFabClicked);
-                setClickableOfFabs(isFabClicked);
-            }
-        });
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
+        loadAnimation();
+        setSupportActionBar(toolbar);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -79,35 +63,67 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+    private void bindingAction() {
+        fabCreate.setOnClickListener(this::onFABCreateClick);
+        fabCreateBoard.setOnClickListener(this::onFABCreateBoardClick);
+    }
+
+    private void onFABCreateBoardClick(View view) {
+        startActivity(new Intent(MainActivity.this, CreateBoardActivity.class));
+    }
+
+    private void onFABCreateClick(View view) {
+        isFabClicked = !isFabClicked;
+        setVisibilityOfFabs(isFabClicked);
+        setAnimationOfFabs(isFabClicked);
+        setClickableOfFabs(isFabClicked);
+    }
+
+    private void loadAnimation() {
+        rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open_anim);
+        rotateClose = AnimationUtils.loadAnimation(this, R.anim.rotate_close_anim);
+        fromBottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom_anim);
+        toBottom = AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim);
+    }
+
+    private void bindingView() {
+        drawer = binding.drawerLayout;
+        navigationView = binding.navView;
+        toolbar = binding.appBarMain.toolbar;
+        fabCreate = binding.appBarMain.fabCreate;
+        fabCreateBoard = binding.appBarMain.fabCreateBoard;
+        fabCreateCard = binding.appBarMain.fabCreateCard;
+    }
+
     private void setClickableOfFabs(boolean isFabClicked) {
-        if (isFabClicked){
-            binding.appBarMain.fabCreateBoard.setClickable(true);
-            binding.appBarMain.fabCreateCard.setClickable(true);
-        }else{
-            binding.appBarMain.fabCreateBoard.setClickable(false);
-            binding.appBarMain.fabCreateCard.setClickable(false );
+        if (isFabClicked) {
+            fabCreateBoard.setClickable(true);
+            fabCreateCard.setClickable(true);
+        } else {
+            fabCreateBoard.setClickable(false);
+            fabCreateCard.setClickable(false);
         }
     }
 
     private void setAnimationOfFabs(boolean isFabClicked) {
         if (isFabClicked) {
-            binding.appBarMain.fabCreate.startAnimation(rotateOpen);
-            binding.appBarMain.fabCreateBoard.startAnimation(fromBottom);
-            binding.appBarMain.fabCreateCard.startAnimation(fromBottom);
+            fabCreate.startAnimation(rotateOpen);
+            fabCreateBoard.startAnimation(fromBottom);
+            fabCreateCard.startAnimation(fromBottom);
         } else {
-            binding.appBarMain.fabCreate.startAnimation(rotateClose);
-            binding.appBarMain.fabCreateBoard.startAnimation(toBottom);
-            binding.appBarMain.fabCreateCard.startAnimation(toBottom);
+            fabCreate.startAnimation(rotateClose);
+            fabCreateBoard.startAnimation(toBottom);
+            fabCreateCard.startAnimation(toBottom);
         }
     }
 
     private void setVisibilityOfFabs(boolean isFabClicked) {
         if (isFabClicked) {
-            binding.appBarMain.fabCreateBoard.setVisibility(View.VISIBLE);
-            binding.appBarMain.fabCreateCard.setVisibility(View.VISIBLE);
+            fabCreateBoard.setVisibility(View.VISIBLE);
+            fabCreateCard.setVisibility(View.VISIBLE);
         } else {
-            binding.appBarMain.fabCreateBoard.setVisibility(View.INVISIBLE);
-            binding.appBarMain.fabCreateCard.setVisibility(View.INVISIBLE);
+            fabCreateBoard.setVisibility(View.INVISIBLE);
+            fabCreateCard.setVisibility(View.INVISIBLE);
         }
     }
 
