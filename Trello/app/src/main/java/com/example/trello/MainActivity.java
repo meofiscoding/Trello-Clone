@@ -6,7 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
-
+import android.widget.Toast;
 import com.example.trello.databinding.ActivityMainBinding;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -21,16 +21,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 public class MainActivity extends AppCompatActivity  {
+    //Firebase init
+    private FirebaseAuth mAuth;
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        // [END initialize_auth]
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -55,6 +59,20 @@ public class MainActivity extends AppCompatActivity  {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
+
+     // [START on_start_check_user]
+     @Override
+     public void onStart() {
+         super.onStart();
+         // Check if user is signed in (non-null) and update UI accordingly.
+         FirebaseUser currentUser = mAuth.getCurrentUser();
+         if(currentUser == null){
+             startActivity(new Intent(this, SplachActivity.class));
+         }else{
+             Toast.makeText(this,"Welcome "+currentUser.getEmail() , Toast.LENGTH_SHORT).show();
+         }
+     }
+     // [END on_start_check_user]
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
