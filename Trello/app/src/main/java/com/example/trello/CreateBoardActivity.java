@@ -37,32 +37,32 @@ public class CreateBoardActivity extends BaseActivity {
     private Button btn_create;
     private EditText et_board_name;
 
-    private void bindingView(){
-        toolbar=findViewById(R.id.toolbar_create_board_activity);
+    private void bindingView() {
+        toolbar = findViewById(R.id.toolbar_create_board_activity);
         circleImageView = findViewById(R.id.iv_board_image);
         et_board_name = findViewById(R.id.et_board_name);
         btn_create = findViewById(R.id.btn_create);
     }
 
-    private void bindingAction(){
+    private void bindingAction() {
         circleImageView.setOnClickListener(this::onBoardImageClick);
         btn_create.setOnClickListener(this::onButtonCreateClick);
     }
 
     private void onButtonCreateClick(View view) {
-        if(mSelectedImageFileUri!=null){
+        if (mSelectedImageFileUri != null) {
             uploadBoardImage();
-        }else{
+        } else {
             showProgressDialog("Please wait");
             createBoard();
         }
     }
 
     private void onBoardImageClick(View view) {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             Constants.INSTANCE.showImageChooser(this);
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.READ_STORAGE_PERMISSION_CODE);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.READ_STORAGE_PERMISSION_CODE);
         }
     }
 
@@ -74,7 +74,7 @@ public class CreateBoardActivity extends BaseActivity {
         bindingView();
         setupActionBar();
 
-        if(this.getIntent().hasExtra("name")){
+        if (this.getIntent().hasExtra("name")) {
             mUserName = this.getIntent().getStringExtra("name");
         }
 
@@ -99,14 +99,14 @@ public class CreateBoardActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK && requestCode == Constants.PICK_IMAGE_REQUEST_CODE) {
             if (data.getData() != null) {
                 mSelectedImageFileUri = data.getData();
-                ((RequestBuilder)((RequestBuilder) Glide.with((FragmentActivity)this).load(Uri.parse(String.valueOf(this.mSelectedImageFileUri))).centerCrop())
+                ((RequestBuilder) ((RequestBuilder) Glide.with((FragmentActivity) this).load(Uri.parse(String.valueOf(this.mSelectedImageFileUri))).centerCrop())
                         .placeholder(R.drawable.ic_user_place_holder)).into(circleImageView);
             }
         }
 
     }
 
-    private final void setupActionBar(){
+    private final void setupActionBar() {
         setSupportActionBar(toolbar);
         ActionBar actionBar = this.getSupportActionBar();
         if (actionBar != null) {
@@ -121,20 +121,20 @@ public class CreateBoardActivity extends BaseActivity {
         });
     }
 
-    private final void uploadBoardImage(){
+    private final void uploadBoardImage() {
         /*showProgessDialog("Please Wait");*/
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child("BOARD_IMAGE"+System.currentTimeMillis() + "."
-                + Constants.INSTANCE.getFileExtension(this,mSelectedImageFileUri));
-        storageReference.putFile(mSelectedImageFileUri).addOnSuccessListener(taskSnapshot->{
-            Log.e("Firebase Image URL",taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(uri->{
-                Log.e("Downloadable Image URL",uri.toString());
+        StorageReference storageReference = storage.getReference().child("BOARD_IMAGE" + System.currentTimeMillis() + "."
+                + Constants.INSTANCE.getFileExtension(this, mSelectedImageFileUri));
+        storageReference.putFile(mSelectedImageFileUri).addOnSuccessListener(taskSnapshot -> {
+            Log.e("Firebase Image URL", taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(uri -> {
+                Log.e("Downloadable Image URL", uri.toString());
                 mBoardImageURL = uri.toString();
                 createBoard();
             });
-        }).addOnFailureListener(exception->{
-            Toast.makeText(this,exception.getMessage(),Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(exception -> {
+            Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
             hideProgressDialog();
         });
     }
@@ -142,7 +142,7 @@ public class CreateBoardActivity extends BaseActivity {
     private void createBoard() {
         ArrayList assignedUsersArrayList = new ArrayList();
         assignedUsersArrayList.add(getCurrentUserID());
-        Board board = new Board(et_board_name.getText().toString(),mBoardImageURL,mUserName,assignedUsersArrayList);
+        Board board = new Board(et_board_name.getText().toString(), mBoardImageURL, mUserName, assignedUsersArrayList);
 //        FirestoreClass().createBoard(this, board);
     }
 
