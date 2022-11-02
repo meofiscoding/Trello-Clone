@@ -1,7 +1,13 @@
 package com.example.trello;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
@@ -10,6 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,17 +32,20 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.trello.databinding.ActivityMainBinding;
+import com.example.trello.ui.gallery.GalleryFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
+
 
 public class MainActivity extends AppCompatActivity {
     //Firebase init
     private FirebaseAuth mAuth;
-
+    public static final int REQUEST_CODE = 101;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private Animation rotateOpen, rotateClose, fromBottom, toBottom;
@@ -42,6 +57,26 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgAvatar;
     private TextView txtUserName;
     private TextView txtEmail;
+    GalleryFragment galleryFragment = new GalleryFragment();
+    final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == RESULT_OK) {
+                Intent intent = result.getData();
+                if (intent == null) {
+                    return;
+                } else {
+                    Uri uri = intent.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        galleryFragment.setBitmapImageView(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
     private void showUserInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
+            user.getTenantId();
             if (user.getDisplayName().isEmpty()) {
                 txtUserName.setVisibility(View.GONE);
             } else {
@@ -179,5 +215,37 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                // If don't have permission so prompt the user.
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Gallery Access")
+                            .setMessage("This permission is needed accept pls")
+                            .setPositiveButton("OK", (DialogInterface dialogInterface, int i) -> {
+                                this.requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CODE);
+                                return;
+                            })
+                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create().show();
+                }
+            }
+        }
+    }
 
+    public void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_PICK);
+        activityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    }
 }

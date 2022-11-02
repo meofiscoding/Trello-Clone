@@ -79,4 +79,5 @@
     <string name="workspace">WorkSpace</string>
     <string name="my_cards">My Cards</string>
     <string name="board">Board</string>
+    <string name="myprofile">My Profile</string>
 </resources>

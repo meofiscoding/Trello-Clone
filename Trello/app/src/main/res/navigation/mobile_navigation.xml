@@ -15,7 +15,7 @@
         android:id="@+id/nav_profile"
         android:name="com.example.trello.ui.gallery.GalleryFragment"
         android:icon="@drawable/ic_nav_sign_out"
-        android:label="@string/nav_sign_out"
+        android:label="@string/myprofile"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment

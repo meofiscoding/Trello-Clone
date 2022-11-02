@@ -1,37 +1,18 @@
 package com.example.trello.firebase;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.trello.Constants;
 import com.example.trello.CreateBoardActivity;
-import com.example.trello.MainActivity;
-import com.example.trello.MyProfileActivity;
-import com.example.trello.SignInActivity;
 //import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
-import com.example.trello.model.User;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import kotlin.jvm.internal.Intrinsics;
 
 public class FirestoreClass {
     private final FirebaseFirestore mFireStore = FirebaseFirestore.getInstance();
