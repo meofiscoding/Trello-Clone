@@ -178,10 +178,19 @@ public class TaskListActivity extends BaseActivity {
         //FIXME
         //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
     }
-//FIXME
-//    public void cardDetatils(int taskListPosition, int cardPosition){
-//        Intent intent = new Intent(this,Cards)
-//    }
+
+    public void cardDetatils(int taskListPosition, int cardPosition){
+        Intent intent = new Intent(this,CardDetailsActivity.class);
+        ArrayList<String> assignedTo = new ArrayList<>();
+        assignedTo.add("DjVLdm8Cc2aVk22s98iG7YD6hLx1");
+        Board board = new Board("A","B","C",assignedTo);
+        intent.putExtra(Constants.BOARD_DETAIL, board);
+        intent.putExtra(Constants.TASK_LIST_ITEM_POSITION,taskListPosition);
+        intent.putExtra(Constants.CARD_LIST_ITEM_POSITION,cardPosition);
+        intent.putExtra(Constants.BOARD_MEMBERS_LIST,mAssignedMembersDetailList);
+        startActivity(intent);
+
+    }
 
     public void boardMembersDetailList(ArrayList<User> list){
         mAssignedMembersDetailList = list;

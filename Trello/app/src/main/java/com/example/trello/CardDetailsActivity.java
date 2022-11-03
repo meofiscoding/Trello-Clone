@@ -2,8 +2,8 @@ package com.example.trello;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
@@ -12,22 +12,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.trello.adapters.LabelColorListItemAdapter;
+import com.example.trello.dialogs.LabelColorListDialog;
+import com.example.trello.dialogs.MembersListDialog;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
 import com.example.trello.model.Card;
-import com.example.trello.model.SelectedMembers;
 import com.example.trello.model.Task;
 import com.example.trello.model.User;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,9 +36,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import kotlin.TypeCastException;
-import kotlin.jvm.internal.Intrinsics;
 
 public class CardDetailsActivity extends BaseActivity {
     private Board mBoardDetails;
@@ -52,25 +50,71 @@ public class CardDetailsActivity extends BaseActivity {
     private TextView tv_select_due_date;
     private Toolbar toolbar;
     private RecyclerView rv_selected_members;
+    private Button btn_update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_details);
         bindingView();
+        getIntentData();
+        setupActionBar();
         bindingAction();
+        //alertDialogForDeleteCard("A");
     }
 
     private void bindingAction() {
+        //et_name_card_details.setText(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
+        //et_name_card_details.setSelection(et_name_card_details.getText().toString().length());
+        //mSelectedColor = ((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getLabelColor();
+//        if(!mSelectedColor.isEmpty()){
+//            setColor();
+//        }
+        tv_select_label_color.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                labelColorsListDialog();
+            }
+        });
+        setupSelectedMembersList();
+        tv_select_members.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                membersListDialog();
+            }
+        });
+        //mSelectedDueDateMilliSeconds = ((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getDueDate();
+//        if(mSelectedDueDateMilliSeconds>0){
+//            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+//            String date = sdf.format(new Date(mSelectedDueDateMilliSeconds));
+//            tv_select_due_date.setText(date);
+//        }
+        tv_select_due_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePicker();
+            }
+        });
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(et_name_card_details.getText().toString().isEmpty()){
+                    //Toast.makeText(this,"Enter card name",Toast.LENGTH_SHORT).show();
+                }else{
+                    //updateCardDetails();
+                }
+            }
+        });
     }
 
     private void bindingView() {
+        toolbar = findViewById(R.id.toolbar_card_details_activity);
         et_name_card_details = findViewById(R.id.et_name_card_details);
         tv_select_label_color = findViewById(R.id.tv_select_label_color);
         tv_select_members = findViewById(R.id.tv_select_members);
         tv_select_due_date = findViewById(R.id.tv_select_due_date);
-        toolbar = findViewById(R.id.toolbar_card_details_activity);
         rv_selected_members = findViewById(R.id.rv_selected_members_list);
+        btn_update = findViewById(R.id.btn_update_card_details);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -94,6 +138,7 @@ public class CardDetailsActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp);
+            actionBar.setTitle("Test Card");
             actionBar.setTitle(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -114,7 +159,7 @@ public class CardDetailsActivity extends BaseActivity {
         }
 
         if (this.getIntent().hasExtra("board_detail")) {
-            this.mBoardDetails = this.getIntent().getParcelableExtra("board_detail");
+            this.mBoardDetails = (Board) this.getIntent().getSerializableExtra("board_detail");
         }
 
         if (this.getIntent().hasExtra("board_members_list")) {
@@ -123,7 +168,7 @@ public class CardDetailsActivity extends BaseActivity {
     }
 
     public void addUpdateTaskListSuccess(){
-        hideProgressDialog();
+        //hideProgressDialog();
         setResult(Activity.RESULT_OK);
         finish();
     }
@@ -138,7 +183,7 @@ public class CardDetailsActivity extends BaseActivity {
         taskList.remove(taskList.size()-1);
         ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().set(this.mCardPosition, card);
         //showProgressDialog("Please Wait");
-        FirestoreClass.addUpdateTaskList(this, mBoardDetails);
+        //FirestoreClass.addUpdateTaskList(this, mBoardDetails);
     }
 
     private final void deleteCard() {
@@ -148,10 +193,10 @@ public class CardDetailsActivity extends BaseActivity {
         taskList.remove(taskList.size()-1);
         ((Task)taskList.get(this.mTaskListPosition)).setCards(cardsList);
         //showProgressDialog("Please Wait");
-        FirestoreClass.addUpdateTaskList(this, mBoardDetails);
+        //FirestoreClass.addUpdateTaskList(this, mBoardDetails);
     }
 
-    private final void alertDialogForDeleteCard(String cardName) {
+    private void alertDialogForDeleteCard(String cardName) {
         AlertDialog.Builder builder = new AlertDialog.Builder((Context)this);
         builder.setTitle(R.string.alert);
         builder.setMessage("Are you sure you want to delete card "+ cardName+" ?");
@@ -163,7 +208,7 @@ public class CardDetailsActivity extends BaseActivity {
                 deleteCard();
             }
         });
-        builder.setPositiveButton("No", new DialogInterface.OnClickListener(){
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -191,24 +236,20 @@ public class CardDetailsActivity extends BaseActivity {
 
         return colorsList;
     }
-//FIXME
-//    private void labelColorsListDialog() {
-//        ArrayList colorsList = this.colorsList();
-//        Context var10004 = (Context)this;
-//        String var10006 = this.getResources().getString(1900114);
-//        Intrinsics.checkExpressionValueIsNotNull(var10006, "resources.getString(R.st…g.str_select_label_color)");
-//      <undefinedtype> listDialog = new LabelColorListDialog(var10004, colorsList, var10006, this.mSelectedColor) {
-//            protected void onItemSelected(@NotNull String color) {
-//                Intrinsics.checkParameterIsNotNull(color, "color");
-//                CardDetailsActivity.this.mSelectedColor = color;
-//                CardDetailsActivity.this.setColor();
-//            }
-//        };
-//        listDialog.show();
-//    }
 
-//FIXME
-//    private void setupSelectedMembersList() {
+    private void labelColorsListDialog() {
+        ArrayList colorsList = colorsList();
+        LabelColorListDialog listDialog = new LabelColorListDialog(this, colorsList(), "Test", mSelectedColor) {
+            @Override
+            public void onItemSelected(int position) {
+                mSelectedColor = colorsList().get(position);
+                setColor();
+            }
+        };
+        listDialog.show();
+    }
+
+    private void setupSelectedMembersList() {
 //        ArrayList<String> cardAssignedMembersList = ((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getAssignedTo();
 //        ArrayList<SelectedMembers> selectedMembersList = new ArrayList<>();
 //        for(int i=0;i<mMembersDetailList.size()-1;i++){
@@ -237,9 +278,34 @@ public class CardDetailsActivity extends BaseActivity {
 //            tv_select_members.setVisibility(View.VISIBLE);
 //            rv_selected_members.setVisibility(View.GONE);
 //        }
-//    }
+    }
 
-    private void showDataPicker(){
+    private void membersListDialog() {
+        ArrayList<String> cardAssignedMembersList = ((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getAssignedTo();
+        if(cardAssignedMembersList.size()>0){
+            for(int i=0;i<mMembersDetailList.size()-1;i++){
+                for(String memberId:cardAssignedMembersList){
+
+                    if(((User)mMembersDetailList.get(i)).getId().equalsIgnoreCase(memberId)){
+                        ((User) mMembersDetailList.get(i)).setSelected(true);
+                    }
+                }
+            }
+        }else{
+            for(int i=0;i<mMembersDetailList.size()-1;i++){
+                ((User)mMembersDetailList.get(i)).setSelected(false);
+            }
+        }
+        MembersListDialog dialog = new MembersListDialog(this,mMembersDetailList,"Select member") {
+            @Override
+            public void onItemSelected(int position) {
+
+            }
+        };
+        dialog.show();
+    }
+
+    private void showDatePicker(){
         Calendar c = Calendar.getInstance();
         int year = c.get(1);
         int month = c.get(2);
