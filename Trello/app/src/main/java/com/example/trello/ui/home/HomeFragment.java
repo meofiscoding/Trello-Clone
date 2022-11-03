@@ -60,32 +60,13 @@ public class HomeFragment extends Fragment implements onItemClick {
         root = binding.getRoot();
         bindingView();
         bindingAction();
+        rv_boards_list.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        rv_boards_list.setHasFixedSize(true);
         db = FirebaseFirestore.getInstance();
         boardArrayList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         boardQuery = db.collection(Constants.BOARDS).whereArrayContains(Constants.ASSIGNED_TO, mAuth.getCurrentUser().getUid());
 
-        boardQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.w(TAG, "Listen failed.", error);
-                    return;
-                }
-
-                if (!value.isEmpty()) {
-                    List<DocumentSnapshot> list = value.getDocuments();
-                    for (DocumentSnapshot d : list) {
-                        Board board = d.toObject(Board.class);
-                        board.setDocumentId(d.getId());
-                        boardArrayList.add(board);
-                    }
-                    boardAdapter.notifyDataSetChanged();
-//                    populateBoardsListToUI(boardArrayList);
-                }
-
-            }
-        });
         return root;
     }
 
@@ -111,7 +92,7 @@ public class HomeFragment extends Fragment implements onItemClick {
             @NonNull
             @Override
             public MyBoardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(root.getContext()).inflate(R.layout.item_board,parent,false);
+                View v = LayoutInflater.from(root.getContext()).inflate(R.layout.item_board, parent, false);
                 return new MyBoardViewHolder(v);
             }
 
@@ -160,16 +141,9 @@ public class HomeFragment extends Fragment implements onItemClick {
 
         //hideProgressDialog()
 
-        if (boardArrayList!= null && boardArrayList.size() > 0) {
+        if (boardArrayList != null && boardArrayList.size() > 0) {
             rv_boards_list.setVisibility(View.VISIBLE);
             tv_no_boards_available.setVisibility(View.GONE);
-
-            rv_boards_list.setLayoutManager(new LinearLayoutManager(this.getContext()));
-            rv_boards_list.setHasFixedSize(true);
-
-//            rv_boards_list.setAdapter(adapter);  // Attach the adapter to the recyclerView.
-            rv_boards_list.setAdapter(boardAdapter);
-            boardAdapter.startListening();
             rv_boards_list.addOnItemTouchListener(
                     new RecyclerItemClickListener(getContext(), rv_boards_list, new RecyclerItemClickListener.OnItemClickListener() {
                         @Override
@@ -183,6 +157,7 @@ public class HomeFragment extends Fragment implements onItemClick {
                         public void onLongItemClick(View view, int position) {
                             // do whatever
                         }
+
                     })
             );
 
