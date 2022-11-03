@@ -60,4 +60,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.4.0'
     // Firebase Storage Dependency
     implementation 'com.google.firebase:firebase-storage:19.1.1'
+    // FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-firestore:8.0.1'
+    //Firebase UI for Recycler View
+    implementation 'com.firebaseui:firebase-ui-database:8.0.1'
+    implementation 'com.google.firebase:firebase-analytics:21.1.0'
+    implementation 'com.google.firebase:firebase-firestore:24.2.2'
+    implementation 'com.google.firebase:firebase-appcheck:16.0.0'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0'
 }

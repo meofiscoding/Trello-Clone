@@ -6,18 +6,21 @@ public class Board {
     private String name;
     private String image;
     private String createdby;
-    private ArrayList assignedto;
+    private ArrayList<String> assignedto;
     private String documentId;
     private ArrayList taskList;
 
-    public Board(String name, String image, String createdby, ArrayList assignedUsersArrayList) {
+    public Board() {
+    }
+
+    public Board(String name, String image, String createdby, ArrayList<String> assignedUsersArrayList) {
         this.name = name;
         this.image = image;
         this.createdby = createdby;
         this.assignedto = assignedUsersArrayList;
     }
 
-    public Board(String name, String image, String createdby, ArrayList assignedto, String documentId, ArrayList taskList) {
+    public Board(String name, String image, String createdby, ArrayList<String> assignedto, String documentId, ArrayList taskList) {
         this.name = name;
         this.image = image;
         this.createdby = createdby;
@@ -50,11 +53,11 @@ public class Board {
         this.createdby = createdby;
     }
 
-    public ArrayList getAssignedto() {
+    public ArrayList<String> getAssignedto() {
         return assignedto;
     }
 
-    public void setAssignedto(ArrayList assignedto) {
+    public void setAssignedto(ArrayList<String> assignedto) {
         this.assignedto = assignedto;
     }
 

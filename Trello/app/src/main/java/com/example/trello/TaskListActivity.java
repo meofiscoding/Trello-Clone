@@ -1,46 +1,27 @@
 package com.example.trello;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Bundle;
 
-import com.example.trello.adapters.BoardItemsAdapter;
 import com.example.trello.adapters.TaskListItemsAdapter;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
 import com.example.trello.model.Card;
 import com.example.trello.model.Task;
 import com.example.trello.model.User;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.trello.databinding.ActivityTaskListBinding;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
-
-import kotlin.jvm.internal.Intrinsics;
 
 
 public class TaskListActivity extends BaseActivity {
