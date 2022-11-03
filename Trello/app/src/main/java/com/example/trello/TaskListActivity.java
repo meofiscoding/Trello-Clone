@@ -16,6 +16,7 @@ import com.example.trello.model.Task;
 import com.example.trello.model.User;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,6 +33,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,6 +82,37 @@ public class TaskListActivity extends BaseActivity {
         // Create an instance of TaskListItemsAdapter and pass the task list to it.
         TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, taskList);
         rv_task_list.setAdapter(adapter);
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                // Notify Adapter of the moved item!
+                recyclerView.getAdapter().notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // No swipe action
+            }
+
+            @Override
+            public boolean isItemViewSwipeEnabled() {
+                // Disable swipe (dont override this method or return true, if you want to have swipe)
+                return false;
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                // Set movement flags to specify the movement direction
+                // final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;  <-- for all directions
+                // In this case only up and down is allowed
+                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                final int swipeFlags = 0;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+        };
+        ItemTouchHelper touchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        touchHelper.attachToRecyclerView(rv_task_list);
 //        rv_card_list.setAdapter(cartAdapter);
     }
 
