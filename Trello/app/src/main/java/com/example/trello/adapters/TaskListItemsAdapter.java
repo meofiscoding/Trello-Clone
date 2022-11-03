@@ -60,8 +60,10 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         ArrayList<String> assignedTo = new ArrayList<>();
 
         assignedTo.add("DjVLdm8Cc2aVk22s98iG7YD6hLx1");
-        Card card1 = new Card("Card 1", "Quang", assignedTo);
+        Card card1 = new Card( "Card1",  "Thinh", assignedTo, "abc", Long.parseLong("09"));
+        Card card2 = new Card( "Card2",  "Thinh", assignedTo, "abc", Long.parseLong("09"));
         cardList.add(card1);
+        cardList.add(card2);
 
 
 
@@ -207,9 +209,9 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
          * @param context Current context, it will be used to access resources.
          * @param orientation Divider orientation. Should be {@link #HORIZONTAL} or {@link #VERTICAL}.
          */
-        DividerItemDecoration dividerItemDecoration =new
-                DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-       holder.rv_card_list.addItemDecoration(dividerItemDecoration);
+//        DividerItemDecoration dividerItemDecoration =new
+//                DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+//       holder.rv_card_list.addItemDecoration(dividerItemDecoration);
 //
 //        //  Creates an ItemTouchHelper that will work with the given Callback.
 //        val helper = ItemTouchHelper(object :
