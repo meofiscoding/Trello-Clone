@@ -46,7 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     //Firebase init
     private FirebaseAuth mAuth;
     public static final int REQUEST_CODE = 101;

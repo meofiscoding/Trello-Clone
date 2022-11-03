@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.example.trello.CardDetailsActivity;
 import com.example.trello.Constants;
 import com.example.trello.CreateBoardActivity;
 //import com.example.trello.TaskListActivity;
@@ -189,40 +192,31 @@ public class FirestoreClass {
 //        }));
 //    }
 
-//    public final void addUpdateTaskList(@NotNull final Activity activity, @NotNull Board board) {
-//        Intrinsics.checkParameterIsNotNull(activity, "activity");
-//        Intrinsics.checkParameterIsNotNull(board, "board");
-//        HashMap taskListHashMap = new HashMap();
-//        ((Map)taskListHashMap).put("taskList", board.getTaskList());
-//        this.mFireStore.collection("boards").document(board.getDocumentId()).update((Map)taskListHashMap).addOnSuccessListener((OnSuccessListener)(new OnSuccessListener() {
-//            // $FF: synthetic method
-//            // $FF: bridge method
-//            public void onSuccess(Object var1) {
-//                this.onSuccess((Void)var1);
-//            }
-//
-//            public final void onSuccess(Void it) {
-//                Log.e(activity.getClass().getSimpleName(), "TaskList updated successfully.");
-//                if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).addUpdateTaskListSuccess();
-//                } else if (activity instanceof CardDetailsActivity) {
-//                    ((CardDetailsActivity)activity).addUpdateTaskListSuccess();
-//                }
-//
-//            }
-//        })).addOnFailureListener((OnFailureListener)(new OnFailureListener() {
-//            public final void onFailure(@NotNull Exception e) {
-//                Intrinsics.checkParameterIsNotNull(e, "e");
-//                if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).hideProgressDialog();
-//                } else if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).hideProgressDialog();
-//                }
-//
-//                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-//            }
-//        }));
-//    }
+    public static final void addUpdateTaskList(@NotNull final Activity activity, @NotNull Board board) {
+        HashMap taskListHashMap = new HashMap();
+        taskListHashMap.put(Constants.TASK_LIST,board.getTaskList());
+        mFireStore.collection(Constants.BOARDS).document(board.getDocumentId()).update(taskListHashMap).addOnSuccessListener(new OnSuccessListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if(activity instanceof TaskListActivity){
+                    ((TaskListActivity) activity).addUpdateTaskListSuccess();
+                }else if (activity instanceof CardDetailsActivity){
+                    ((CardDetailsActivity) activity).addUpdateTaskListSuccess();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (activity instanceof TaskListActivity) {
+                    ((TaskListActivity)activity).hideProgressDialog();
+                } else if (activity instanceof TaskListActivity) {
+                    ((TaskListActivity)activity).hideProgressDialog();
+                }
+
+                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+            }
+        });
+    }
 
 //    public final void getAssignedMembersListDetails(@NotNull final Activity activity, @NotNull ArrayList assignedTo) {
 //        Intrinsics.checkParameterIsNotNull(activity, "activity");
