@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.trello.R;
 import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
+import com.example.trello.model.Card;
 import com.example.trello.model.Task;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,6 +56,13 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
 
         Task model = list.get(position);
+        ArrayList<Card> cardList= new ArrayList<>();
+        ArrayList<String> assignedTo = new ArrayList<>();
+
+        assignedTo.add("DjVLdm8Cc2aVk22s98iG7YD6hLx1");
+        Card card1 = new Card("Card 1", "Quang", assignedTo);
+        cardList.add(card1);
+
 
 
         if (position == list.size() ) {
@@ -149,43 +157,40 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             public void onClick(View v) {
                 holder.tv_add_card.setVisibility(View.GONE);
                 holder.cv_add_card.setVisibility(View.VISIBLE);
-
-                holder.ib_close_card_name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        holder.tv_add_card.setVisibility(View.VISIBLE);
-                        holder.cv_add_card.setVisibility(View.GONE);
-                    }
-                });
-
-                holder.ib_done_card_name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String cardName = holder.et_card_name.getText().toString();
-
-                        if (!cardName.equals("")) {
-                            if (context instanceof TaskListActivity){
-                               // context.addCardToTaskList(position, cardName)
-                            }
-                        } else {
-                            Toast.makeText(context, "Please Enter Card Detail.", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                });
             }
-        }); {
+        });
 
+        holder.ib_close_card_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.tv_add_card.setVisibility(View.VISIBLE);
+                holder.cv_add_card.setVisibility(View.GONE);
+            }
+        });
 
-        }
+        holder.ib_done_card_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String cardName = holder.et_card_name.getText().toString();
+
+                if (!cardName.equals("")) {
+                    if (context instanceof TaskListActivity){
+                        ((TaskListActivity) context).addCardToTaskList(holder.getAdapterPosition(), cardName);
+                    }
+                } else {
+                    Toast.makeText(context, "Please Enter Card Name.", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        });
+
 
         holder.rv_card_list.setLayoutManager(new LinearLayoutManager(context));
         holder.rv_card_list.setHasFixedSize(true);
 
-//        val adapter =
-//                CardListItemsAdapter(context, model.cards)
-//        holder.rv_card_list.adapter = adapter
-//
+        CartListItemsAdapter adapter = new CartListItemsAdapter(context, cardList);
+        holder.rv_card_list.setAdapter(adapter);
+
 //        adapter.setOnClickListener(object :
 //        CardListItemsAdapter.OnClickListener {
 //            override fun onClick(cardPosition:Int){
@@ -314,9 +319,10 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             rv_card_list = itemView.findViewById(R.id.rv_card_list);
             cv_add_card = itemView.findViewById(R.id.cv_add_card);
             ib_close_card_name = itemView.findViewById(R.id.ib_close_card_name);
-            tv_add_task_list = itemView.findViewById(R.id.et_card_name);
+//            tv_add_task_list = itemView.findViewById(R.id.et_card_name);
             ib_done_card_name = itemView.findViewById(R.id.ib_done_card_name);
             tv_add_card = itemView.findViewById(R.id.tv_add_card);
+            et_card_name = itemView.findViewById(R.id.et_card_name);
         }
     }
 }
