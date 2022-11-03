@@ -51,12 +51,13 @@ public class BoardItemsAdapter extends RecyclerView.Adapter<BoardItemsAdapter.My
                 .into(holder.boardImage);
         holder.boardname.setText(list.get(position).getName());
         holder.boardcreated.setText(list.get(position).getCreatedby());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClick.onItemClicked(list.get(position));
-            }
-        });
+//        holder.cardView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                itemClick.onItemClicked(list.get(position));
+//
+//            }
+//        });
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trello.R;
+import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
 import com.example.trello.model.Task;
 
@@ -44,7 +46,8 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         View view = LayoutInflater.from(context).inflate(R.layout.item_task, parent, false);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) ((double) parent.getWidth() * 0.7D), -2);
         // Here the dynamic margins are applied to the view.
-//        view.setLayoutParams((android.view.ViewGroup.LayoutParams) layoutParams);
+        layoutParams.setMargins(15,0,40,0);
+        view.setLayoutParams((android.view.ViewGroup.LayoutParams) layoutParams);
         return new TaskListItemsAdapter.TaskViewHolder(view);
     }
 
@@ -54,7 +57,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         Task model = list.get(position);
 
 
-        if (position == list.size() - 1) {
+        if (position == list.size() ) {
             holder.tv_add_task_list.setVisibility(View.VISIBLE);
             holder.ll_task_item.setVisibility(View.GONE);
         } else {
@@ -64,83 +67,117 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
         holder.tv_task_list_title.setText(model.getTitle());
 
-//        holder.tv_add_task_list.setOnClickListener {
-//
-//            holder.tv_add_task_list.setVisibility(View.GONE);
-//            holder.cv_add_task_list_name.setVisibility(View.VISIBLE);
-//        }
-//
-//        holder.ib_close_list_name.setOnClickListener {
-//            holder.tv_add_task_list.setVisibility(View.VISIBLE);
-//            holder.cv_add_task_list_name.setVisibility(View.GONE);
-//        }
+        holder.tv_add_task_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.tv_add_task_list.setVisibility(View.GONE);
+                holder.cv_add_task_list_name.setVisibility(View.VISIBLE);
+            }
+        });
 
-//        holder.ib_done_list_name.setOnClickListener {
-//            val listName = holder.et_task_list_name.text.toString()
-//
-//            if (listName.isNotEmpty()) {
-//                // Here we check the context is an instance of the TaskListActivity.
-//                if (context is TaskListActivity){
-//                    context.createTaskList(listName)
-//                }
-//            } else {
-//                Toast.makeText(context, "Please Enter List Name.", Toast.LENGTH_SHORT).show()
-//            }
-//        }
 
-//        holder.ib_edit_list_name.setOnClickListener {
-//
-//            holder.et_edit_task_list_name.setText(model.title) // Set the existing title
-//            holder.ll_title_view.setVisibility(View.GONE);
-//            holder.cv_edit_task_list_name.setVisibility(View.VISIBLE);
-//        }
 
-//        holder.ib_close_editable_view.setOnClickListener {
-//            holder.ll_title_view.setVisibility(View.VISIBLE);
-//            holder.cv_edit_task_list_name.setVisibility(View.GONE);
-//        }
-//
-//        holder.ib_done_edit_list_name.setOnClickListener {
-//            val listName = holder.et_edit_task_list_name.text.toString()
-//
-//            if (listName.isNotEmpty()) {
-//                if (context is TaskListActivity){
-//                    context.updateTaskList(position, listName, model)
-//                }
-//            } else {
-//                Toast.makeText(context, "Please Enter List Name.", Toast.LENGTH_SHORT).show()
-//            }
-//        }
 
-//        holder.ib_delete_list.setOnClickListener {
-//
-//            alertDialogForDeleteList(position, model.title)
-//        }
+        holder.ib_close_list_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            holder.tv_add_task_list.setVisibility(View.VISIBLE);
+            holder.cv_add_task_list_name.setVisibility(View.GONE);
+            }
+        });
 
-//        holder.tv_add_card.setOnClickListener {
-//
-//            holder.tv_add_card.setVisibility(View.GONE);
-//            holder.cv_add_card.setVisibility(View.VISIBLE);
-//
-//            holder.ib_close_card_name.setOnClickListener {
-//                holder.tv_add_card.visibility = View.VISIBLE
-//                holder.cv_add_card.setVisibility(View.GONE);
-//            }
-//
-//            holder.ib_done_card_name.setOnClickListener {
-//
-//                val cardName = holder.et_card_name.text.toString()
-//
-//                if (cardName.isNotEmpty()) {
-//                    if (context is TaskListActivity){
-//                        context.addCardToTaskList(position, cardName)
-//                    }
-//                } else {
-//                    Toast.makeText(context, "Please Enter Card Detail.", Toast.LENGTH_SHORT)
-//                            .show()
-//                }
-//            }
-//        }
+        holder.ib_done_list_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            String listName = holder.et_task_list_name.getText().toString();
+
+            if (!listName.equals("")) {
+                // Here we check the context is an instance of the TaskListActivity.
+                if (context instanceof TaskListActivity){
+                    //FIXME
+                    //context.createTaskList(listName)
+                }
+            } else {
+                Toast.makeText(context, "Please Enter List Name.", Toast.LENGTH_SHORT).show();
+            }
+            }
+        });
+
+        holder.ib_edit_list_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.et_edit_task_list_name.setText(model.getTitle()) ;// Set the existing title
+            holder.ll_title_view.setVisibility(View.GONE);
+            holder.cv_edit_task_list_name.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        holder.ib_close_editable_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.ll_title_view.setVisibility(View.VISIBLE);
+                holder.cv_edit_task_list_name.setVisibility(View.GONE);
+            }
+        });
+
+        holder.ib_done_edit_list_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String listName = holder.et_edit_task_list_name.getText().toString();
+
+                if (!listName.equals("")) {
+                    if (context instanceof TaskListActivity){
+                        //FIXME
+                        //context.updateTaskList(position, listName, model)
+                    }
+                } else {
+                    Toast.makeText(context, "Please Enter List Name.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+       holder.ib_delete_list.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+              // alertDialogForDeleteList(position, model.getTitle());
+           }
+       });
+
+        holder.tv_add_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.tv_add_card.setVisibility(View.GONE);
+                holder.cv_add_card.setVisibility(View.VISIBLE);
+
+                holder.ib_close_card_name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.tv_add_card.setVisibility(View.VISIBLE);
+                        holder.cv_add_card.setVisibility(View.GONE);
+                    }
+                });
+
+                holder.ib_done_card_name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String cardName = holder.et_card_name.getText().toString();
+
+                        if (!cardName.equals("")) {
+                            if (context instanceof TaskListActivity){
+                               // context.addCardToTaskList(position, cardName)
+                            }
+                        } else {
+                            Toast.makeText(context, "Please Enter Card Detail.", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }
+                });
+            }
+        }); {
+
+
+        }
 
         holder.rv_card_list.setLayoutManager(new LinearLayoutManager(context));
         holder.rv_card_list.setHasFixedSize(true);

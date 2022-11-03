@@ -48,6 +48,7 @@ public class TaskListActivity extends BaseActivity {
     private String mBoardDocumentId;
     ArrayList mAssignedMembersDetailList;
     private RecyclerView rv_task_list;
+    private String boardname;
 
     public ArrayList getmAssignedMembersDetailList() {
         return mAssignedMembersDetailList;
@@ -60,8 +61,10 @@ public class TaskListActivity extends BaseActivity {
 
     private void bindingAction() {
         ArrayList<Task> taskList= new ArrayList<>();
-        Task addTaskList =new Task("TO DO","Thinh");
+        Task addTaskList =new Task("TO DO1","Thinh");
+        Task addTaskList2 =new Task("TO DO2","Thinh");
         taskList.add(addTaskList);
+        taskList.add(addTaskList2);
 
         rv_task_list.setLayoutManager( new
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -93,13 +96,13 @@ public class TaskListActivity extends BaseActivity {
 
 
 
-    private final void setupActionBar(){
+    private  void setupActionBar(){
         setSupportActionBar(toolbar);
         ActionBar actionBar = this.getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_white_color_back_24dp);
-            actionBar.setTitle("Test1");
+            actionBar.setTitle(mBoardDocumentId);
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
