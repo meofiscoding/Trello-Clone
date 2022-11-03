@@ -83,9 +83,11 @@ public class CreateBoardActivity extends BaseActivity {
         }
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        mUserName = user.getDisplayName();
-
-
+        if (user.getDisplayName().isEmpty()){
+            mUserName = user.getEmail();
+        }else{
+            mUserName = user.getDisplayName();
+        }
         bindingAction();
     }
 

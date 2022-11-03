@@ -17,11 +17,21 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" />
+
     <include
         android:id="@+id/include"
         layout="@layout/content_main"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="-45dp" />
@@ -44,22 +54,13 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="20dp"
         android:clickable="true"
-        android:visibility="invisible"
         android:tint="@color/white"
+        android:visibility="invisible"
         app:fabCustomSize="50dp"
         app:layout_constraintBottom_toTopOf="@+id/fab_create"
         app:layout_constraintEnd_toEndOf="@+id/fab_create"
         app:srcCompat="@drawable/trelloboard" />
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_create_card"
@@ -68,9 +69,9 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:visibility="invisible"
         android:scaleType="fitCenter"
         android:tint="@color/white"
+        android:visibility="invisible"
         app:fabCustomSize="45dp"
         app:layout_constraintBottom_toTopOf="@+id/fab_create_board"
         app:layout_constraintEnd_toEndOf="@+id/fab_create_board"

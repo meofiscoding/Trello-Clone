@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.Bundle;
 
 import com.example.trello.adapters.BoardItemsAdapter;
+import com.example.trello.adapters.CartListItemsAdapter;
 import com.example.trello.adapters.TaskListItemsAdapter;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
@@ -48,7 +49,7 @@ public class TaskListActivity extends BaseActivity {
     private String mBoardDocumentId;
     ArrayList mAssignedMembersDetailList;
     private RecyclerView rv_task_list;
-    private String boardname;
+    private RecyclerView rv_card_list;
 
     public ArrayList getmAssignedMembersDetailList() {
         return mAssignedMembersDetailList;
@@ -61,23 +62,39 @@ public class TaskListActivity extends BaseActivity {
 
     private void bindingAction() {
         ArrayList<Task> taskList= new ArrayList<>();
+        ArrayList<Card> cardList= new ArrayList<>();
+        ArrayList<String> assignedTo = new ArrayList<>();
+
+        assignedTo.add("DjVLdm8Cc2aVk22s98iG7YD6hLx1");
+        Card card1 = new Card("Card 1", "Quang", assignedTo);
+        cardList.add(card1);
+
         Task addTaskList =new Task("TO DO1","Thinh");
         Task addTaskList2 =new Task("TO DO2","Thinh");
+        Task addTaskList3 =new Task("TO DO3","Quang", cardList);
         taskList.add(addTaskList);
         taskList.add(addTaskList2);
+        taskList.add(addTaskList3);
 
         rv_task_list.setLayoutManager( new
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rv_task_list.setHasFixedSize(true);
 
+//        rv_card_list.setLayoutManager( new
+//                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        rv_card_list.setHasFixedSize(true);
+
         // Create an instance of TaskListItemsAdapter and pass the task list to it.
         TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, taskList);
+        CartListItemsAdapter cartAdapter = new CartListItemsAdapter(this, cardList);
         rv_task_list.setAdapter(adapter);
+//        rv_card_list.setAdapter(cartAdapter);
     }
 
     private void bindingView() {
         toolbar = findViewById(R.id.toolbar_task_list_activity);
         rv_task_list = findViewById(R.id.rv_task_list);
+//        rv_card_list = findViewById(R.id.rv_card_list);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,13 +206,13 @@ public class TaskListActivity extends BaseActivity {
         Card card = new Card(cardName,FirestoreClass.getCurrentUserID(),cardAssignedUsersList);
         ArrayList<Card> cardsList = ((Task)mBoardDetails.getTaskList().get(position)).getCards();
         cardsList.add(card);
-        Task task = new Task(((Task) mBoardDetails.getTaskList().get(position)).getTitle(),
+        Task task = new Task(
+                ((Task) mBoardDetails.getTaskList().get(position)).getTitle(),
                 ((Task) mBoardDetails.getTaskList().get(position)).getCreatedBy(),
                 cardsList);
         mBoardDetails.getTaskList().set(position,task);
         showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
+//        new FirestoreClass().addUpdateTaskList(this, mBoardDetails);
     }
 //FIXME
 //    public void cardDetatils(int taskListPosition, int cardPosition){
@@ -210,6 +227,8 @@ public class TaskListActivity extends BaseActivity {
         mBoardDetails.getTaskList().add(addTaskList);
         rv_task_list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         rv_task_list.setHasFixedSize(true);
+//        rv_card_list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+//        rv_card_list.setHasFixedSize(true);
         //FIXME
         //TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, mBoardDetails.getTaskList());
         //rv_task_list.setAdapter(adapter);
