@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 
+import com.example.trello.adapters.BoardItemsAdapter;
+import com.example.trello.adapters.TaskListItemsAdapter;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
 import com.example.trello.model.Card;
@@ -46,6 +48,7 @@ public class TaskListActivity extends BaseActivity {
     private String mBoardDocumentId;
     ArrayList mAssignedMembersDetailList;
     private RecyclerView rv_task_list;
+    private String boardname;
 
     public ArrayList getmAssignedMembersDetailList() {
         return mAssignedMembersDetailList;
@@ -57,6 +60,19 @@ public class TaskListActivity extends BaseActivity {
     private Toolbar toolbar;
 
     private void bindingAction() {
+        ArrayList<Task> taskList= new ArrayList<>();
+        Task addTaskList =new Task("TO DO1","Thinh");
+        Task addTaskList2 =new Task("TO DO2","Thinh");
+        taskList.add(addTaskList);
+        taskList.add(addTaskList2);
+
+        rv_task_list.setLayoutManager( new
+                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rv_task_list.setHasFixedSize(true);
+
+        // Create an instance of TaskListItemsAdapter and pass the task list to it.
+        TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, taskList);
+        rv_task_list.setAdapter(adapter);
     }
 
     private void bindingView() {
@@ -66,7 +82,7 @@ public class TaskListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
+        setContentView(R.layout.activity_task_list);
         bindingView();
         bindingAction();
         if(this.getIntent().hasExtra(Constants.DOCUMENT_ID)){
@@ -75,17 +91,18 @@ public class TaskListActivity extends BaseActivity {
         //showProgressDialog("Please Wait");
         //FIXME
         //FirestoreClass.getBoardDetails(this,mBoardDocumentId);
+        setupActionBar();
     }
 
 
 
-    private final void setupActionBar(){
+    private  void setupActionBar(){
         setSupportActionBar(toolbar);
         ActionBar actionBar = this.getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_white_color_back_24dp);
-            actionBar.setTitle(mBoardDetails.getName());
+            actionBar.setTitle(mBoardDocumentId);
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

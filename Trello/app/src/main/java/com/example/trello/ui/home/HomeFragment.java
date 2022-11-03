@@ -1,10 +1,12 @@
 package com.example.trello.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -12,14 +14,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.trello.Constants;
 import com.example.trello.MainActivity;
+import com.example.trello.RecycleClick.RecyclerItemClickListener;
+import com.example.trello.TaskListActivity;
 import com.example.trello.adapters.BoardItemsAdapter;
 import com.example.trello.databinding.FragmentHomeBinding;
 import com.example.trello.model.Board;
+import com.example.trello.onItemClick;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements onItemClick {
 
     private FragmentHomeBinding binding;
     private RecyclerView rv_boards_list;
@@ -66,17 +72,32 @@ public class HomeFragment extends Fragment {
             rv_boards_list.setHasFixedSize(true);
 
             // Create an instance of BoardItemsAdapter and pass the boardList to it.
-            BoardItemsAdapter adapter = new BoardItemsAdapter(this.getContext(), boardsList);
+            BoardItemsAdapter adapter = new BoardItemsAdapter(this.getContext(), boardsList,this);
             rv_boards_list.setAdapter(adapter);  // Attach the adapter to the recyclerView.
+            rv_boards_list.addOnItemTouchListener(
+        new RecyclerItemClickListener(getContext(), rv_boards_list ,new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent= new Intent(getContext(), TaskListActivity.class);
+               intent.putExtra(Constants.DOCUMENT_ID, "Sample");
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+                // do whatever
+            }
+        })
+);
 
 //            adapter.setOnClickListener( :
 //            BoardItemsAdapter.OnClickListener {
-//                override fun onClick(position: Int, model: Board) {
+//                void onClick(position: Int, model: Board) {
 //                    val intent = Intent(this@MainActivity, TaskListActivity::class.java)
-//                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
-//                    startActivity(intent)
-//                }
-//            })
+////                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+////                    startActivity(intent)
+////                }
+////            })
         } else {
             rv_boards_list.setVisibility(View.GONE);
             tv_no_boards_available.setVisibility(View.VISIBLE);
@@ -87,5 +108,12 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onItemClicked(Board board) {
+        Toast.makeText(this.getContext(), board.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this.getContext(),TaskListActivity.class);
+        startActivity(intent);
     }
 }
