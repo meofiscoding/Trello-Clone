@@ -62,19 +62,12 @@ public class TaskListActivity extends BaseActivity {
 
     private void bindingAction() {
         ArrayList<Task> taskList= new ArrayList<>();
-        ArrayList<Card> cardList= new ArrayList<>();
-        ArrayList<String> assignedTo = new ArrayList<>();
-
-        assignedTo.add("DjVLdm8Cc2aVk22s98iG7YD6hLx1");
-        Card card1 = new Card("Card 1", "Quang", assignedTo);
-        cardList.add(card1);
 
         Task addTaskList =new Task("TO DO1","Thinh");
         Task addTaskList2 =new Task("TO DO2","Thinh");
-        Task addTaskList3 =new Task("TO DO3","Quang", cardList);
         taskList.add(addTaskList);
         taskList.add(addTaskList2);
-        taskList.add(addTaskList3);
+
 
         rv_task_list.setLayoutManager( new
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -86,7 +79,6 @@ public class TaskListActivity extends BaseActivity {
 
         // Create an instance of TaskListItemsAdapter and pass the task list to it.
         TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, taskList);
-        CartListItemsAdapter cartAdapter = new CartListItemsAdapter(this, cardList);
         rv_task_list.setAdapter(adapter);
 //        rv_card_list.setAdapter(cartAdapter);
     }

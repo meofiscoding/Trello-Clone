@@ -199,31 +199,31 @@ public class FirestoreClass {
 //        }));
 //    }
 
-    public static final void addUpdateTaskList(@NotNull final Activity activity, @NotNull Board board) {
-        HashMap taskListHashMap = new HashMap();
-        taskListHashMap.put(Constants.TASK_LIST,board.getTaskList());
-        mFireStore.collection(Constants.BOARDS).document(board.getDocumentId()).update(taskListHashMap).addOnSuccessListener(new OnSuccessListener() {
-            @Override
-            public void onSuccess(Object o) {
-                if(activity instanceof TaskListActivity){
-                    ((TaskListActivity) activity).addUpdateTaskListSuccess();
-                }else if (activity instanceof CardDetailsActivity){
-                    ((CardDetailsActivity) activity).addUpdateTaskListSuccess();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if (activity instanceof TaskListActivity) {
-                    ((TaskListActivity)activity).hideProgressDialog();
-                } else if (activity instanceof TaskListActivity) {
-                    ((TaskListActivity)activity).hideProgressDialog();
-                }
-
-                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-            }
-        });
-    }
+//    public static final void addUpdateTaskList(@NotNull final Activity activity, @NotNull Board board) {
+//        HashMap taskListHashMap = new HashMap();
+//        taskListHashMap.put(Constants.TASK_LIST,board.getTaskList());
+//        mFireStore.collection(Constants.BOARDS).document(board.getDocumentId()).update(taskListHashMap).addOnSuccessListener(new OnSuccessListener() {
+//            @Override
+//            public void onSuccess(Object o) {
+//                if(activity instanceof TaskListActivity){
+//                    ((TaskListActivity) activity).addUpdateTaskListSuccess();
+//                }else if (activity instanceof CardDetailsActivity){
+//                    ((CardDetailsActivity) activity).addUpdateTaskListSuccess();
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                if (activity instanceof TaskListActivity) {
+//                    ((TaskListActivity)activity).hideProgressDialog();
+//                } else if (activity instanceof TaskListActivity) {
+//                    ((TaskListActivity)activity).hideProgressDialog();
+//                }
+//
+//                Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+//            }
+//        });
+//    }
 
 //    public final void getAssignedMembersListDetails(@NotNull final Activity activity, @NotNull ArrayList assignedTo) {
 //        Intrinsics.checkParameterIsNotNull(activity, "activity");
