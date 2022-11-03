@@ -1,5 +1,6 @@
 package com.example.trello.firebase;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,12 +11,18 @@ import com.example.trello.CardDetailsActivity;
 import com.example.trello.Constants;
 import com.example.trello.CreateBoardActivity;
 //import com.example.trello.TaskListActivity;
+import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 public class FirestoreClass {
     private static final FirebaseFirestore mFireStore = FirebaseFirestore.getInstance();
