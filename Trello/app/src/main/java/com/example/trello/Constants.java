@@ -24,7 +24,7 @@ public class Constants {
     @NotNull
     public static final String MOBILE = "mobile";
     @NotNull
-    public static final String ASSIGNED_TO = "assignedTo";
+    public static final String ASSIGNED_TO = "assignedto";
     @NotNull
     public static final String DOCUMENT_ID = "documentId";
     @NotNull
