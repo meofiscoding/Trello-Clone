@@ -55,9 +55,17 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         return new TaskListItemsAdapter.TaskViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-
+//        ArrayList<Card> cardList= new ArrayList<>();
+//        ArrayList<String> assignedTo = new ArrayList<>();
+//
+//        assignedTo.add("DjVLdm8Cc2aVk22s98iG7YD6hLx1");
+//        Card card1 = new Card( "Card1",  "Thinh", assignedTo, "abc", Long.parseLong("09"));
+//        Card card2 = new Card( "Card2",  "Thinh", assignedTo, "abc", Long.parseLong("09"));
+//        cardList.add(card1);
+//        cardList.add(card2);
 
 
         if (position == list.size() ) {
@@ -221,7 +229,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         holder.rv_card_list.setLayoutManager(new LinearLayoutManager(context));
         holder.rv_card_list.setHasFixedSize(true);
 
-        CartListItemsAdapter adapter = new CartListItemsAdapter(context, cardList);
+        CartListItemsAdapter adapter = new CartListItemsAdapter(context, model.getCards());
         holder.rv_card_list.setAdapter(adapter);
 
 //        adapter.setOnClickListener(object :

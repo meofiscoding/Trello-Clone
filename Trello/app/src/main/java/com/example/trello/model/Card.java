@@ -8,6 +8,7 @@ public class Card {
     private ArrayList<String> assignedTo;
     private String labelColor;
     private Long dueDate;
+    private String taskname;
 
     public Card(String name, String createdBy, ArrayList<String> assignedTo, String labelColor, Long dueDate) {
         this.name = name;
@@ -17,10 +18,33 @@ public class Card {
         this.dueDate = dueDate;
     }
 
-    public Card(String cardName, String currentUserID, ArrayList<String> cardAssignedUsersList) {
+    public String getTaskname() {
+        return taskname;
+    }
+
+    public void setTaskname(String taskname) {
+        this.taskname = taskname;
+    }
+
+    public Card(String name, String taskname) {
+        this.name = name;
+        this.taskname = taskname;
+    }
+
+    public Card(String cardName, String currentUserID, ArrayList<String> cardAssignedUsersList, String name) {
         this.name = cardName;
         this.createdBy = currentUserID;
         this.assignedTo = cardAssignedUsersList;
+        this.taskname =name;
+    }
+
+    public Card(String name, String createdBy, ArrayList<String> assignedTo, String labelColor, Long dueDate, String taskname) {
+        this.name = name;
+        this.createdBy = createdBy;
+        this.assignedTo = assignedTo;
+        this.labelColor = labelColor;
+        this.dueDate = dueDate;
+        this.taskname = taskname;
     }
 
     public String getName() {

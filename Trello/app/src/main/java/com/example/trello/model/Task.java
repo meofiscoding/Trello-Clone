@@ -6,6 +6,16 @@ public class Task {
     private String title;
     private String createdBy;
     private String boardname;
+    private ArrayList<Card> cards= new ArrayList<Card>();
+
+    public ArrayList<Card> getCards() {
+        return cards;
+    }
+
+    public Task setCards(ArrayList<Card> cards) {
+        this.cards = cards;
+        return this;
+    }
 
     public Task(String title, String createdBy, String cards) {
         this.title = title;

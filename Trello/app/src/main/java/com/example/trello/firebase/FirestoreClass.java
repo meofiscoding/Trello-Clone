@@ -11,6 +11,7 @@ import com.example.trello.CreateBoardActivity;
 //import com.example.trello.TaskListActivity;
 import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
+import com.example.trello.model.Card;
 import com.example.trello.model.Task;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -109,6 +110,82 @@ public class FirestoreClass {
 //        }));
 //    }
 
+    public  void addUpdateTaskList(Activity activity,  Task task) {
+
+//        HashMap taskListHashMap = new HashMap();
+//        ((Map)taskListHashMap).put("taskList", board.getTaskList());
+//        this.mFireStore.collection("boards").document(board.getDocumentId()).update((Map)taskListHashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                Log.e(activity.getClass().getSimpleName(), "TaskList updated successfully.");
+//                if (activity instanceof TaskListActivity) {
+//                    ((TaskListActivity)activity).addUpdateTaskListSuccess();
+//                } else if (activity instanceof CardDetailsActivity) {
+//                    ((CardDetailsActivity)activity).addUpdateTaskListSuccess();
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure( Exception e) {
+//                Log.w("e", "Error updating document", e);
+//            }
+//        });
+
+        mFireStore.collection("tasks").document().set(task, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.e(activity.getClass().getSimpleName(), "Task created successfully.");
+                        Toast.makeText((Context)activity, (CharSequence)"Task created successfully.", Toast.LENGTH_LONG).show();
+                        //activity.boardCreatedSuccessfully();
+                    }
+                }).addOnFailureListener(e->{
+                    // activity.hideProgressDialog();
+                    Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+                });
+        // $FF: synthetic method
+        // $FF: bridge method
+
+    }
+
+    public  void addUpdateCard(TaskListActivity activity,  Card card) {
+
+//        HashMap taskListHashMap = new HashMap();
+//        ((Map)taskListHashMap).put("taskList", board.getTaskList());
+//        this.mFireStore.collection("boards").document(board.getDocumentId()).update((Map)taskListHashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                Log.e(activity.getClass().getSimpleName(), "TaskList updated successfully.");
+//                if (activity instanceof TaskListActivity) {
+//                    ((TaskListActivity)activity).addUpdateTaskListSuccess();
+//                } else if (activity instanceof CardDetailsActivity) {
+//                    ((CardDetailsActivity)activity).addUpdateTaskListSuccess();
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure( Exception e) {
+//                Log.w("e", "Error updating document", e);
+//            }
+//        });
+
+        mFireStore.collection("cards").document().set(card, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.e(activity.getClass().getSimpleName(), "Card created successfully.");
+                        Toast.makeText((Context)activity, (CharSequence)"Card created successfully.", Toast.LENGTH_LONG).show();
+                        //activity.boardCreatedSuccessfully();
+                    }
+                }).addOnFailureListener(e->{
+                    // activity.hideProgressDialog();
+                    Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+                });
+        // $FF: synthetic method
+        // $FF: bridge method
+
+    }
+
     public static final void createBoard(CreateBoardActivity activity, Board board) {
         mFireStore.collection(Constants.BOARDS).document().set(board, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -206,6 +283,39 @@ public class FirestoreClass {
                 activity.taskDetails(taskArrayList);
             }
         });
+    }
+
+    public  void getCardDetails( TaskListActivity activity,  ArrayList<Task> tasks) {
+        HashMap<String,ArrayList<Card>> listHashMap= new HashMap<>();
+        if(tasks!=null) {
+            for (Task task : tasks) {
+                this.mFireStore.collection("cards").whereEqualTo("title", task.getTitle()).get().addOnSuccessListener(new OnSuccessListener() {
+                    // $FF: synthetic method
+                    // $FF: bridge method
+                    public void onSuccess(Object var1) {
+                        this.onSuccess((QuerySnapshot) var1);
+                    }
+
+                    public final void onSuccess(QuerySnapshot document) {
+                        Log.e(activity.getClass().getSimpleName(), document.toString());
+                        // Board board=document.getDocuments().get(0).toObject(Board.class);
+                        HashMap<String, ArrayList<Card>> listHashMap = new HashMap<>();
+                        ArrayList<Card> cardArrayList = new ArrayList<Card>();
+                        List<DocumentSnapshot> list = document.getDocuments();
+                        for (DocumentSnapshot d : list) {
+                            Card card = d.toObject(Card.class);
+                            //board.setDocumentId(d.getId());
+                            cardArrayList.add(card);
+                        }
+                        listHashMap.put(task.getTitle(), cardArrayList);
+                        //board.setDocumentId(document.getId());
+
+                    }
+                });
+                activity.carddetail(listHashMap);
+            }
+        }
+
     }
 
 

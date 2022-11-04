@@ -48,6 +48,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -63,6 +64,7 @@ public class TaskListActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private FirestoreRecyclerAdapter<Task, TaskListItemsAdapter.TaskViewHolder> adapter;
     private ArrayList<Task> tasks;
+    private HashMap<String, ArrayList<Card>> cards;
 
 
     private RecyclerView rv_card_list;
@@ -109,6 +111,16 @@ public class TaskListActivity extends BaseActivity {
         if(tasks==null){
             tasks= new ArrayList<>();
             //tasks.add(new Task("Good Morning","Thinh","ABCDEF" ));
+        }
+
+            for(Task task: tasks){
+                if(cards !=null){
+                if(cards.containsKey(task.getTitle())) {
+                    task.setCards(cards.get(task.getTitle()));
+                }
+            }else {
+                    task.getCards().add(new Card("DEMO","BOT"));
+                }
         }
 
 //        rv_card_list.setLayoutManager( new
@@ -176,6 +188,7 @@ public class TaskListActivity extends BaseActivity {
         FirestoreClass firestoreClass= new FirestoreClass();
         firestoreClass.getBoardDetails(this,mBoardDocumentId);
         firestoreClass.getTaskDetails(this,mBoardDocumentId);
+        firestoreClass.getCardDetails(this,tasks);
     }
     @Override
     protected void onStart() {
@@ -239,6 +252,18 @@ public class TaskListActivity extends BaseActivity {
         //FirestoreClass().getAssignedMembersListDetails(this,mBoardDetails.getAssignedto());
     }
 
+    public void carddetail(HashMap<String, ArrayList<Card>> cartgets){
+         cards= cartgets;
+        bindingView();
+        bindingAction();
+        setupActionBar();
+        //hideProgressDialog();
+        //setupActionBar();
+        // showProgressDialog("Please Wait");
+        //FIXME
+        //FirestoreClass().getAssignedMembersListDetails(this,mBoardDetails.getAssignedto());
+    }
+
     public void boardDetails(Board board){
         mBoardDetails = board;
         //hideProgressDialog();
@@ -288,21 +313,18 @@ public class TaskListActivity extends BaseActivity {
     }
 
 
-//    public void addCardToTaskList(int position, String cardName){
-//        mBoardDetails.getTaskList().remove(mBoardDetails.getTaskList().size()-1);
-//        ArrayList<String> cardAssignedUsersList = new ArrayList<>();
-//        cardAssignedUsersList.add(FirestoreClass.getCurrentUserID());
-//        Card card = new Card(cardName,FirestoreClass.getCurrentUserID(),cardAssignedUsersList);
-//        ArrayList<Card> cardsList = ((Task)mBoardDetails.getTaskList().get(position)).getCards();
-//        cardsList.add(card);
-//        Task task = new Task(((Task) mBoardDetails.getTaskList().get(position)).getTitle(),
-//                ((Task) mBoardDetails.getTaskList().get(position)).getCreatedBy(),
-//                cardsList);
-//        mBoardDetails.getTaskList().set(position,task);
-//        showProgressDialog("Please Wait");
-//        //FIXME
-//        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
-//    }
+    public void addCardToTaskList(int position, String cardName){
+
+        //ArrayList<String> cardAssignedUsersList = new ArrayList<>();
+       // cardAssignedUsersList.add(FirestoreClass.getCurrentUserID());
+        Card card = new Card(cardName,tasks.get(position).getTitle());
+
+        //showProgressDialog("Please Wait");
+        //FIXME
+        FirestoreClass firestoreClass =new FirestoreClass();
+        firestoreClass.addUpdateCard(this, card);
+        getData();
+    }
 
 //FIXME
 //    public void cardDetatils(int taskListPosition, int cardPosition){
@@ -339,7 +361,7 @@ public class TaskListActivity extends BaseActivity {
         //FIXME
         //TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, mBoardDetails.getTaskList());
         //rv_task_list.setAdapter(adapter);
-    }
+
 
 
 }
