@@ -43,6 +43,7 @@ public class GalleryFragment extends Fragment {
     private Button btnUpdate;
     private Uri mUri;
     private MainActivity mainActivity;
+    private boolean isUpdateName;
 
     public void setmUri(Uri mUri) {
         this.mUri = mUri;
@@ -81,13 +82,30 @@ public class GalleryFragment extends Fragment {
         if (user == null){
             return;
         }
-        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(edtName.getText().toString()).setPhotoUri(mUri).build();
+        isUpdateName = false;
+        var request = new UserProfileChangeRequest.Builder().setDisplayName(edtName.getText().toString());
+        if (mUri != null){
+            request = request.setPhotoUri(mUri);
+        }
+        UserProfileChangeRequest profileChangeRequest = request.build();
         user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(view.getContext(), "Update Profile Successfully!!", Toast.LENGTH_SHORT).show();
+                    isUpdateName = true;
+                    Toast.makeText(view.getContext(), "Update Name Successfully!!", Toast.LENGTH_SHORT).show();
                     mainActivity.showUserInfo();
+                }
+            }
+        });
+        user.updateEmail(edtEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    if (isUpdateName){
+                        Toast.makeText(view.getContext(), "Update Profile Successfully!!", Toast.LENGTH_SHORT).show();
+                        mainActivity.showUserInfo();
+                    }
                 }
             }
         });
