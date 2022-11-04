@@ -14,17 +14,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trello.R;
 import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
+import com.example.trello.model.Card;
 import com.example.trello.model.Task;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdapter.TaskViewHolder> {
 
@@ -53,6 +57,8 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
+
+
 
         if (position == list.size() ) {
             holder.tv_add_task_list.setVisibility(View.VISIBLE);
@@ -184,43 +190,40 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             public void onClick(View v) {
                 holder.tv_add_card.setVisibility(View.GONE);
                 holder.cv_add_card.setVisibility(View.VISIBLE);
-
-                holder.ib_close_card_name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        holder.tv_add_card.setVisibility(View.VISIBLE);
-                        holder.cv_add_card.setVisibility(View.GONE);
-                    }
-                });
-
-                holder.ib_done_card_name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String cardName = holder.et_card_name.getText().toString();
-
-                        if (!cardName.equals("")) {
-                            if (context instanceof TaskListActivity){
-                               // context.addCardToTaskList(position, cardName)
-                            }
-                        } else {
-                            Toast.makeText(context, "Please Enter Card Detail.", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                });
             }
-        }); {
+        });
 
+        holder.ib_close_card_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.tv_add_card.setVisibility(View.VISIBLE);
+                holder.cv_add_card.setVisibility(View.GONE);
+            }
+        });
 
-        }
+        holder.ib_done_card_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String cardName = holder.et_card_name.getText().toString();
+
+                if (!cardName.equals("")) {
+                    if (context instanceof TaskListActivity){
+                        ((TaskListActivity) context).addCardToTaskList(holder.getAdapterPosition(), cardName);
+                    }
+                } else {
+                    Toast.makeText(context, "Please Enter Card Name.", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        });
+
 
         holder.rv_card_list.setLayoutManager(new LinearLayoutManager(context));
         holder.rv_card_list.setHasFixedSize(true);
 
-//        val adapter =
-//                CardListItemsAdapter(context, model.cards)
-//        holder.rv_card_list.adapter = adapter
-//
+        CartListItemsAdapter adapter = new CartListItemsAdapter(context, cardList);
+        holder.rv_card_list.setAdapter(adapter);
+
 //        adapter.setOnClickListener(object :
 //        CardListItemsAdapter.OnClickListener {
 //            override fun onClick(cardPosition:Int){
@@ -240,8 +243,80 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         DividerItemDecoration dividerItemDecoration =new
                 DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
        holder.rv_card_list.addItemDecoration(dividerItemDecoration);
+
+        //  Creates an ItemTouchHelper that will work with the given Callback.
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                // Notify Adapter of the moved item!
+                recyclerView.getAdapter().notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // No swipe action
+            }
+
+            @Override
+            public boolean isItemViewSwipeEnabled() {
+                // Disable swipe (dont override this method or return true, if you want to have swipe)
+                return false;
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                // Set movement flags to specify the movement direction
+                // final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;  <-- for all directions
+                // In this case only up and down is allowed
+                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                final int swipeFlags = 0;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+        };
+//        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+//            @Override
+//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
+//                // Notify Adapter of the moved item!
+//                //recyclerView.getAdapter().notifyItemMoved(dragged.getAdapterPosition(), target.getAdapterPosition());
+//                int draggedPosition = dragged.getAdapterPosition();
+//                int targetPosition = target.getAdapterPosition();
 //
-//        //  Creates an ItemTouchHelper that will work with the given Callback.
+//                if (mPositionDraggedFrom == -1) {
+//                    mPositionDraggedFrom = draggedPosition;
+//                }
+//                mPositionDraggedTo = targetPosition;
+//
+//                /**
+//                 * Swaps the elements at the specified positions in the specified list.
+//                 */
+//                Collections.swap(TaskListItemsAdapter.this.list.get(position).getCards(), draggedPosition, targetPosition);
+//                adapter.notifyItemMoved(draggedPosition, targetPosition);
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//                // No swipe action
+//
+//            }
+//
+//            @Override
+//            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+//                super.clearView(recyclerView, viewHolder);
+//                if (mPositionDraggedFrom != -1 && mPositionDraggedTo != -1 && mPositionDraggedFrom != mPositionDraggedTo) {
+//
+//
+//
+//                // Reset the global variables
+//                mPositionDraggedFrom = -1;
+//                mPositionDraggedTo = -1;
+//            }
+//            }
+//        };
+
+
 //        val helper = ItemTouchHelper(object :
 //        ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
 //
@@ -299,8 +374,10 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
             /*Attaches the ItemTouchHelper to the provided RecyclerView. If TouchHelper is already
             attached to a RecyclerView, it will first detach from the previous one.*/
+
         //helper.attachToRecyclerView(holder.itemView.rv_card_list)
         }
+
     }
 
     @Override
@@ -351,6 +428,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             ib_close_card_name = itemView.findViewById(R.id.ib_close_card_name);
             ib_done_card_name = itemView.findViewById(R.id.ib_done_card_name);
             tv_add_card = itemView.findViewById(R.id.tv_add_card);
+            et_card_name = itemView.findViewById(R.id.et_card_name);
         }
     }
 }

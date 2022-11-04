@@ -6,8 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.bumptech.glide.Glide;
-import com.example.trello.adapters.MyBoardViewHolder;
+
 import com.example.trello.adapters.TaskListItemsAdapter;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
@@ -26,7 +25,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.ActionBar;
 
 import android.util.Log;
@@ -37,6 +36,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.Toolbar;
+
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.ItemTouchHelper;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,12 +56,16 @@ public class TaskListActivity extends BaseActivity {
     private String mBoardDocumentId;
     ArrayList mAssignedMembersDetailList;
     private RecyclerView rv_task_list;
+
     private String boardname;
     private Query boardQuery;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirestoreRecyclerAdapter<Task, TaskListItemsAdapter.TaskViewHolder> adapter;
     private ArrayList<Task> tasks;
+
+
+    private RecyclerView rv_card_list;
 
 
     public ArrayList getmAssignedMembersDetailList() {
@@ -92,10 +102,6 @@ public class TaskListActivity extends BaseActivity {
     private void bindingAction() {
 
 
-//        Task addTaskList =new Task("TO DO1","Thinh");
-//        Task addTaskList2 =new Task("TO DO2","Thinh");
-//        taskList.add(addTaskList);
-//        taskList.add(addTaskList2);
 
         rv_task_list.setLayoutManager( new
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -105,14 +111,51 @@ public class TaskListActivity extends BaseActivity {
             //tasks.add(new Task("Good Morning","Thinh","ABCDEF" ));
         }
 
+//        rv_card_list.setLayoutManager( new
+//                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        rv_card_list.setHasFixedSize(true);
+
         // Create an instance of TaskListItemsAdapter and pass the task list to it.
         TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, tasks);
         rv_task_list.setAdapter(adapter);
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                // Notify Adapter of the moved item!
+                recyclerView.getAdapter().notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // No swipe action
+            }
+
+            @Override
+            public boolean isItemViewSwipeEnabled() {
+                // Disable swipe (dont override this method or return true, if you want to have swipe)
+                return false;
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                // Set movement flags to specify the movement direction
+                // final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;  <-- for all directions
+                // In this case only up and down is allowed
+                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                final int swipeFlags = 0;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+        };
+        ItemTouchHelper touchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        touchHelper.attachToRecyclerView(rv_task_list);
+//        rv_card_list.setAdapter(cartAdapter);
     }
 
     private void bindingView() {
         toolbar = findViewById(R.id.toolbar_task_list_activity);
         rv_task_list = findViewById(R.id.rv_task_list);
+//        rv_card_list = findViewById(R.id.rv_card_list);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,6 +287,7 @@ public class TaskListActivity extends BaseActivity {
         //FirestoreClass().getBoardDetails(this@TaskListActivity, mBoardDetails.documentId)
     }
 
+
 //    public void addCardToTaskList(int position, String cardName){
 //        mBoardDetails.getTaskList().remove(mBoardDetails.getTaskList().size()-1);
 //        ArrayList<String> cardAssignedUsersList = new ArrayList<>();
@@ -259,6 +303,7 @@ public class TaskListActivity extends BaseActivity {
 //        //FIXME
 //        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
 //    }
+
 //FIXME
 //    public void cardDetatils(int taskListPosition, int cardPosition){
 //        Intent intent = new Intent(this,Cards)
@@ -284,6 +329,17 @@ public class TaskListActivity extends BaseActivity {
 //        //FIXME
 //        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails);
 //    }
+
+
+
+       // rv_task_list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        //rv_task_list.setHasFixedSize(true);
+//        rv_card_list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+//        rv_card_list.setHasFixedSize(true);
+        //FIXME
+        //TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, mBoardDetails.getTaskList());
+        //rv_task_list.setAdapter(adapter);
+    }
 
 
 }

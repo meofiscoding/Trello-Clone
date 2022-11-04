@@ -18,9 +18,9 @@ public class Card {
     }
 
     public Card(String cardName, String currentUserID, ArrayList<String> cardAssignedUsersList) {
-        this.name = name;
-        this.createdBy = createdBy;
-        this.assignedTo = assignedTo;
+        this.name = cardName;
+        this.createdBy = currentUserID;
+        this.assignedTo = cardAssignedUsersList;
     }
 
     public String getName() {
