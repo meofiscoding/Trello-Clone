@@ -3,6 +3,7 @@ package com.example.trello;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,6 +15,7 @@ import com.example.trello.model.Board;
 import com.example.trello.model.Card;
 import com.example.trello.model.Task;
 import com.example.trello.model.User;
+import com.example.trello.ui.home.HomeFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -118,14 +120,15 @@ public class TaskListActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
+
         if(this.getIntent().hasExtra(Constants.DOCUMENT_ID)){
             mBoardDocumentId = this.getIntent().getStringExtra(Constants.DOCUMENT_ID);
-
         }
 //        FirestoreClass firestoreClass= new FirestoreClass();
 //        firestoreClass.getBoardDetails(this,mBoardDocumentId);
 //        firestoreClass.getTaskDetails(this,mBoardDocumentId);
         getData();
+
        // getListItems(mBoardDocumentId);
 
     }
@@ -156,6 +159,12 @@ public class TaskListActivity extends BaseActivity {
                 TaskListActivity.this.onBackPressed();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i= new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -197,6 +206,7 @@ public class TaskListActivity extends BaseActivity {
     }
 
     public void boardDetails(Board board){
+
         mBoardDetails = board;
         //hideProgressDialog();
         setupActionBar();
