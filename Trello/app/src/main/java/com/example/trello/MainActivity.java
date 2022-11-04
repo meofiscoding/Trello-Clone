@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity{
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user.getTenantId();
-            if (user.getDisplayName().isEmpty()) {
+            if (user.getDisplayName()==null) {
                 txtUserName.setVisibility(View.GONE);
             } else {
                 txtUserName.setVisibility(View.VISIBLE);

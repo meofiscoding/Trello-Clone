@@ -5,17 +5,20 @@ import java.util.ArrayList;
 public class Task {
     private String title;
     private String createdBy;
-    private ArrayList<Card> cards;
+    private String boardname;
 
-    public Task(String title, String createdBy, ArrayList<Card> cards) {
+    public Task(String title, String createdBy, String cards) {
         this.title = title;
         this.createdBy = createdBy;
-        this.cards = cards;
+        this.boardname = cards;
     }
 
     public Task(String title, String createdBy) {
         this.title = title;
         this.createdBy = createdBy;
+    }
+
+    public Task() {
     }
 
     public Task(String title) {
@@ -38,11 +41,11 @@ public class Task {
         this.createdBy = createdBy;
     }
 
-    public ArrayList<Card> getCards() {
-        return cards;
+    public String getBoardname() {
+        return boardname;
     }
 
-    public void setCards(ArrayList<Card> cards) {
-        this.cards = cards;
+    public void setBoardname(String boardname) {
+        this.boardname = boardname;
     }
 }
