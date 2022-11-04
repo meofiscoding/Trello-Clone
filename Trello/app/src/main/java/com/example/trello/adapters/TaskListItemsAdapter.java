@@ -87,17 +87,18 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                         if (context instanceof TaskListActivity){
                             //FIXME
                             ((TaskListActivity) context).createTaskList(listName);
+                            ((TaskListActivity) context).getData();
                         }
                     } else {
                         Toast.makeText(context, "Please Enter List Name.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            return;
+
         } else {
             holder.tv_add_task_list.setVisibility(View.GONE);
             holder.ll_task_item.setVisibility(View.VISIBLE);
-        }
+
         Task model = list.get(position);
         holder.tv_task_list_title.setText(model.getTitle());
 
@@ -299,7 +300,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             /*Attaches the ItemTouchHelper to the provided RecyclerView. If TouchHelper is already
             attached to a RecyclerView, it will first detach from the previous one.*/
         //helper.attachToRecyclerView(holder.itemView.rv_card_list)
-
+        }
     }
 
     @Override

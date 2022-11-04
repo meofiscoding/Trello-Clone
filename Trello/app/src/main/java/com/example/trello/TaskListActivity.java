@@ -16,6 +16,7 @@ import com.example.trello.model.Task;
 import com.example.trello.model.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -66,6 +67,28 @@ public class TaskListActivity extends BaseActivity {
 
     private Toolbar toolbar;
 
+//    private void getListItems(String name) {
+//        db.collection("tasks").whereEqualTo("boardname",name).get()
+//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot documentSnapshots) {
+//                        if (documentSnapshots.isEmpty()) {
+//                            Log.d(TAG, "onSuccess: LIST EMPTY");
+//                            return;
+//                        } else {
+//                            // Convert the whole Query Snapshot to a list
+//                            // of objects directly! No need to fetch each
+//                            // document.
+//                            List<Task> types = documentSnapshots.toObjects(Task.class);
+//
+//                            // Add all to your list
+//                            tasks.addAll(types);
+//                            Log.d(TAG, "onSuccess: ");
+//                        }
+//                    }
+//                });
+//    }
+
     private void bindingAction() {
 
 
@@ -79,6 +102,7 @@ public class TaskListActivity extends BaseActivity {
         rv_task_list.setHasFixedSize(true);
         if(tasks==null){
             tasks= new ArrayList<>();
+            //tasks.add(new Task("Good Morning","Thinh","ABCDEF" ));
         }
 
         // Create an instance of TaskListItemsAdapter and pass the task list to it.
@@ -98,12 +122,18 @@ public class TaskListActivity extends BaseActivity {
             mBoardDocumentId = this.getIntent().getStringExtra(Constants.DOCUMENT_ID);
 
         }
+//        FirestoreClass firestoreClass= new FirestoreClass();
+//        firestoreClass.getBoardDetails(this,mBoardDocumentId);
+//        firestoreClass.getTaskDetails(this,mBoardDocumentId);
+        getData();
+       // getListItems(mBoardDocumentId);
+
+    }
+    public void getData(){
         FirestoreClass firestoreClass= new FirestoreClass();
         firestoreClass.getBoardDetails(this,mBoardDocumentId);
         firestoreClass.getTaskDetails(this,mBoardDocumentId);
-
     }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -156,6 +186,9 @@ public class TaskListActivity extends BaseActivity {
     }
     public void taskDetails(ArrayList taskList){
         tasks = taskList;
+        bindingView();
+        bindingAction();
+        setupActionBar();
         //hideProgressDialog();
         //setupActionBar();
         // showProgressDialog("Please Wait");
@@ -183,6 +216,7 @@ public class TaskListActivity extends BaseActivity {
         //FIXME
         FirestoreClass firestoreClass= new FirestoreClass();
         firestoreClass.addUpdateTaskList(this, task);
+        getData();
     }
 
 //    public void updateTaskList(int position,String listName,Task model){
@@ -250,4 +284,6 @@ public class TaskListActivity extends BaseActivity {
 //        //FIXME
 //        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails);
 //    }
+
+
 }
