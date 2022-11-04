@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-
 import com.example.trello.adapters.TaskListItemsAdapter;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
@@ -57,7 +56,6 @@ public class TaskListActivity extends BaseActivity {
     private String mBoardDocumentId;
     ArrayList mAssignedMembersDetailList;
     private RecyclerView rv_task_list;
-
     private String boardname;
     private Query boardQuery;
     private FirebaseFirestore db;
@@ -167,7 +165,6 @@ public class TaskListActivity extends BaseActivity {
     private void bindingView() {
         toolbar = findViewById(R.id.toolbar_task_list_activity);
         rv_task_list = findViewById(R.id.rv_task_list);
-//        rv_card_list = findViewById(R.id.rv_card_list);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -318,7 +315,6 @@ public class TaskListActivity extends BaseActivity {
         //FirestoreClass().getBoardDetails(this@TaskListActivity, mBoardDetails.documentId)
     }
 
-
     public void addCardToTaskList(int position, String cardName){
 
         //ArrayList<String> cardAssignedUsersList = new ArrayList<>();
@@ -333,23 +329,6 @@ public class TaskListActivity extends BaseActivity {
     }
 
 //FIXME
-//    public void cardDetatils(int taskListPosition, int cardPosition){
-//        Intent intent = new Intent(this,Cards)
-//    }
-
-//    public void boardMembersDetailList(ArrayList<User> list){
-//        mAssignedMembersDetailList = list;
-//        hideProgressDialog();
-//
-//        Task addTaskList = new Task("Add List");
-//        mBoardDetails.getTaskList().add(addTaskList);
-//        rv_task_list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-//        rv_task_list.setHasFixedSize(true);
-//        //FIXME
-//        //TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, mBoardDetails.getTaskList());
-//        //rv_task_list.setAdapter(adapter);
-//    }
-
 //    public void updateCardsInTaskList(int taskListPosition,ArrayList<Card> cards){
 //        mBoardDetails.getTaskList().remove(mBoardDetails.getTaskList().size()-1);
 //        ((Task)mBoardDetails.getTaskList().get(taskListPosition)).setCards(cards);
