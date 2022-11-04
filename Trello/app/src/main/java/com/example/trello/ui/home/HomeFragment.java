@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment implements onItemClick {
                         @Override
                         public void onItemClick(View view, int position) {
                             Intent intent = new Intent(getContext(), TaskListActivity.class);
-                            intent.putExtra(Constants.DOCUMENT_ID, "Sample");
+                            intent.putExtra(Constants.DOCUMENT_ID, boardsList.get(position).getName());
                             startActivity(intent);
                         }
 

@@ -78,31 +78,30 @@ public class CardDetailsActivity extends BaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public boolean onOptionItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case R.id.action_delete_card:
-                alertDialogForDeleteCard(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    public boolean onOptionItemSelected(MenuItem item){
+//        switch (item.getItemId()){
+//            case R.id.action_delete_card:
+//                alertDialogForDeleteCard(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
-    private final void setupActionBar() {
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = this.getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp);
-            actionBar.setTitle(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
-        }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CardDetailsActivity.this.onBackPressed();
-            }
-        });
-    }
+//    private final void setupActionBar() {
+//        setSupportActionBar(toolbar);
+//        ActionBar actionBar = this.getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp);
+//            actionBar.setTitle(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
+//        }
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                CardDetailsActivity.this.onBackPressed();
+//            }
+//        });//    }
 
     private final void getIntentData() {
         if (this.getIntent().hasExtra("task_list_item_position")) {
@@ -128,53 +127,53 @@ public class CardDetailsActivity extends BaseActivity {
         finish();
     }
 
-    private void updateCardDetails(){
-        Card card = new Card(et_name_card_details.getText().toString()
-        ,((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getCreatedBy()
-        ,((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getAssignedTo()
-        , mSelectedColor
-        ,mSelectedDueDateMilliSeconds);
-        ArrayList<Task> taskList = mBoardDetails.getTaskList();
-        taskList.remove(taskList.size()-1);
-        ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().set(this.mCardPosition, card);
-        //showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass().addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
-    }
+//    private void updateCardDetails(){
+//        Card card = new Card(et_name_card_details.getText().toString()
+//        ,((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getCreatedBy()
+//        ,((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getAssignedTo()
+//        , mSelectedColor
+//        ,mSelectedDueDateMilliSeconds);
+//        ArrayList<Task> taskList = mBoardDetails.getTaskList();
+//        taskList.remove(taskList.size()-1);
+//        ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().set(this.mCardPosition, card);
+//        //showProgressDialog("Please Wait");
+//        //FIXME
+//        //FirestoreClass().addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
+//    }
 
-    private final void deleteCard() {
-        ArrayList<Card> cardsList = ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards();
-        cardsList.remove(mCardPosition);
-        ArrayList<Task> taskList = mBoardDetails.getTaskList();
-        taskList.remove(taskList.size()-1);
-        ((Task)taskList.get(this.mTaskListPosition)).setCards(cardsList);
-        //showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass.addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
-    }
+//    private final void deleteCard() {
+//        ArrayList<Card> cardsList = ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards();
+//        cardsList.remove(mCardPosition);
+//        ArrayList<Task> taskList = mBoardDetails.getTaskList();
+//        taskList.remove(taskList.size()-1);
+//        ((Task)taskList.get(this.mTaskListPosition)).setCards(cardsList);
+//        //showProgressDialog("Please Wait");
+//        //FIXME
+//        //FirestoreClass.addUpdateTaskList(this@CardDetailsActivity, mBoardDetails)
+//    }
 
-    private final void alertDialogForDeleteCard(String cardName) {
-        AlertDialog.Builder builder = new AlertDialog.Builder((Context)this);
-        builder.setTitle(R.string.alert);
-        builder.setMessage("Are you sure you want to delete card "+ cardName+" ?");
-        builder.setIcon(R.drawable.ic_delete);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                deleteCard();
-            }
-        });
-        builder.setPositiveButton("No", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-    }
+//    private final void alertDialogForDeleteCard(String cardName) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder((Context)this);
+//        builder.setTitle(R.string.alert);
+//        builder.setMessage("Are you sure you want to delete card "+ cardName+" ?");
+//        builder.setIcon(R.drawable.ic_delete);
+//        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.dismiss();
+//                deleteCard();
+//            }
+//        });
+//        builder.setPositiveButton("No", new DialogInterface.OnClickListener(){
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        AlertDialog alertDialog = builder.create();
+//        alertDialog.setCancelable(false);
+//        alertDialog.show();
+//    }
 
     private void setColor(){
         tv_select_label_color.setText("");

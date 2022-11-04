@@ -54,17 +54,51 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
 
-        Task model = list.get(position);
-
-
         if (position == list.size() ) {
             holder.tv_add_task_list.setVisibility(View.VISIBLE);
             holder.ll_task_item.setVisibility(View.GONE);
+
+            holder.tv_add_task_list.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.tv_add_task_list.setVisibility(View.GONE);
+                    holder.cv_add_task_list_name.setVisibility(View.VISIBLE);
+                }
+            });
+
+
+
+
+            holder.ib_close_list_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.tv_add_task_list.setVisibility(View.VISIBLE);
+                    holder.cv_add_task_list_name.setVisibility(View.GONE);
+                }
+            });
+
+            holder.ib_done_list_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String listName = holder.et_task_list_name.getText().toString();
+
+                    if (!listName.equals("")) {
+                        // Here we check the context is an instance of the TaskListActivity.
+                        if (context instanceof TaskListActivity){
+                            //FIXME
+                            ((TaskListActivity) context).createTaskList(listName);
+                        }
+                    } else {
+                        Toast.makeText(context, "Please Enter List Name.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            return;
         } else {
             holder.tv_add_task_list.setVisibility(View.GONE);
             holder.ll_task_item.setVisibility(View.VISIBLE);
         }
-
+        Task model = list.get(position);
         holder.tv_task_list_title.setText(model.getTitle());
 
         holder.tv_add_task_list.setOnClickListener(new View.OnClickListener() {
@@ -270,7 +304,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size()+1;
     }
 
     public class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -314,7 +348,6 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             rv_card_list = itemView.findViewById(R.id.rv_card_list);
             cv_add_card = itemView.findViewById(R.id.cv_add_card);
             ib_close_card_name = itemView.findViewById(R.id.ib_close_card_name);
-            tv_add_task_list = itemView.findViewById(R.id.et_card_name);
             ib_done_card_name = itemView.findViewById(R.id.ib_done_card_name);
             tv_add_card = itemView.findViewById(R.id.tv_add_card);
         }
