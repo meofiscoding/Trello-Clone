@@ -214,6 +214,12 @@ public class TaskListActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this,MainActivity.class);
+        startActivity(i);
+    }
+
     public boolean onCreateOptionsMenu(Menu menu){
         //FIXME
 //        this.getMenuInflater().inflate(R.menu.menu_members,menu);
