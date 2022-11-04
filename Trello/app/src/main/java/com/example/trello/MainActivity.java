@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -21,10 +22,14 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -33,6 +38,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.example.trello.databinding.ActivityMainBinding;
 import com.example.trello.ui.gallery.GalleryFragment;
+import com.example.trello.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,12 +47,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     //Firebase init
+    private static final int FRAGMENT_HOME = 0;
+    private static final int FRAGMENT_MYPROFILE = 1;
+    private static final int FRAGMENT_SETTING = 2;
+    private int mCurrentFragment = FRAGMENT_HOME;
     private FirebaseAuth mAuth;
     public static final int REQUEST_CODE = 101;
-    private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
     private Animation rotateOpen, rotateClose, fromBottom, toBottom;
     private boolean isFabClicked;
     private DrawerLayout drawer;
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity{
     private ImageView imgAvatar;
     private TextView txtUserName;
     private TextView txtEmail;
+    private ActionBarDrawerToggle toggle;
     GalleryFragment galleryFragment = new GalleryFragment();
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
@@ -66,6 +75,7 @@ public class MainActivity extends AppCompatActivity{
                     return;
                 } else {
                     Uri uri = intent.getData();
+                    galleryFragment.setmUri(uri);
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         galleryFragment.setBitmapImageView(bitmap);
@@ -80,33 +90,29 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // [START initialize_auth]
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
         bindingView();
+        setSupportActionBar(toolbar);
         bindingAction();
         //load animation
         loadAnimation();
-        setSupportActionBar(toolbar);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_profile, R.id.nav_slideshow)
-                .setOpenableLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        toggle = new ActionBarDrawerToggle(this,drawer,toolbar,R.string.open_drawer_navigation, R.string.close_drawer_navigation);
+        toggle.syncState();
+            replaceFragment(new HomeFragment());
+            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         showUserInfo();
     }
 
     private void bindingAction() {
         fabCreate.setOnClickListener(this::onFABCreateClick);
         fabCreateBoard.setOnClickListener(this::onFABCreateBoardClick);
+        drawer.addDrawerListener(toggle);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void onFABCreateBoardClick(View view) {
@@ -127,7 +133,7 @@ public class MainActivity extends AppCompatActivity{
         toBottom = AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim);
     }
 
-    private void showUserInfo() {
+    public void showUserInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user.getTenantId();
@@ -143,15 +149,15 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void bindingView() {
-        drawer = binding.drawerLayout;
-        navigationView = binding.navView;
-        toolbar = binding.appBarMain.toolbar;
-        fabCreate = binding.appBarMain.fabCreate;
-        fabCreateBoard = binding.appBarMain.fabCreateBoard;
-        fabCreateCard = binding.appBarMain.fabCreateCard;
-        imgAvatar = binding.navView.getHeaderView(0).findViewById(R.id.imgAvatar);
-        txtUserName = binding.navView.getHeaderView(0).findViewById(R.id.txtUserName);
-        txtEmail = binding.navView.getHeaderView(0).findViewById(R.id.txtEmail);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+        fabCreate = findViewById(R.id.fab_create);
+        fabCreateBoard = findViewById(R.id.fab_create_board);
+        fabCreateCard = findViewById(R.id.fab_create_card);
+        imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imgAvatar);
+        txtUserName = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
+        txtEmail = navigationView.getHeaderView(0).findViewById(R.id.txtEmail);
     }
 
     private void setClickableOfFabs(boolean isFabClicked) {
@@ -207,13 +213,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE) {
@@ -245,5 +244,45 @@ public class MainActivity extends AppCompatActivity{
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_PICK);
         activityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_home){
+            if (mCurrentFragment != FRAGMENT_HOME){
+                replaceFragment(new HomeFragment());
+                mCurrentFragment = FRAGMENT_HOME;
+            }
+        }
+        if (id == R.id.nav_setting){
+            if (mCurrentFragment != FRAGMENT_SETTING){
+                replaceFragment(new HomeFragment());
+                mCurrentFragment = FRAGMENT_SETTING;
+            }
+        }
+        if (id == R.id.nav_profile){
+            if (mCurrentFragment != FRAGMENT_MYPROFILE){
+                replaceFragment(galleryFragment);
+                mCurrentFragment = FRAGMENT_MYPROFILE;
+            }
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame,fragment);
+        transaction.commit();
     }
 }

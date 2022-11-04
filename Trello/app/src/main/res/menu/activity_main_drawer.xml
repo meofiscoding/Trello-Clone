@@ -23,7 +23,7 @@
                 android:icon="@drawable/ic_baseline_credit_card_24"
                 android:title="@string/my_cards" />
             <item
-                android:id="@+id/nav_slideshow"
+                android:id="@+id/nav_setting"
                 android:icon="@drawable/ic_baseline_settings_24"
                 android:title="@string/setting" />
             <item

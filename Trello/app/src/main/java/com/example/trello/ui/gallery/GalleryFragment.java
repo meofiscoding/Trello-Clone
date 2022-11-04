@@ -4,8 +4,10 @@ import static com.example.trello.MainActivity.REQUEST_CODE;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.UriMatcher;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,18 +16,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.trello.MainActivity;
 import com.example.trello.R;
 import com.example.trello.databinding.FragmentGalleryBinding;
+import com.example.trello.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class GalleryFragment extends Fragment {
 
@@ -33,6 +41,13 @@ public class GalleryFragment extends Fragment {
     private ImageView imgAvatar;
     private EditText edtName, edtEmail;
     private Button btnUpdate;
+    private Uri mUri;
+    private MainActivity mainActivity;
+    private boolean isUpdateName;
+
+    public void setmUri(Uri mUri) {
+        this.mUri = mUri;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +58,7 @@ public class GalleryFragment extends Fragment {
         View root = binding.getRoot();
         bindingView();
         bindingAction();
+        mainActivity = (MainActivity) getActivity();
         setUserInfo();
         return root;
     }
@@ -58,6 +74,41 @@ public class GalleryFragment extends Fragment {
 
     private void bindingAction() {
         imgAvatar.setOnClickListener(this::onClickAvatar);
+        btnUpdate.setOnClickListener(this::onClickUpdate);
+    }
+
+    private void onClickUpdate(View view) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            return;
+        }
+        isUpdateName = false;
+        var request = new UserProfileChangeRequest.Builder().setDisplayName(edtName.getText().toString());
+        if (mUri != null){
+            request = request.setPhotoUri(mUri);
+        }
+        UserProfileChangeRequest profileChangeRequest = request.build();
+        user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    isUpdateName = true;
+                    Toast.makeText(view.getContext(), "Update Name Successfully!!", Toast.LENGTH_SHORT).show();
+                    mainActivity.showUserInfo();
+                }
+            }
+        });
+        user.updateEmail(edtEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    if (isUpdateName){
+                        Toast.makeText(view.getContext(), "Update Profile Successfully!!", Toast.LENGTH_SHORT).show();
+                        mainActivity.showUserInfo();
+                    }
+                }
+            }
+        });
     }
 
     private void onClickAvatar(View view) {
@@ -65,7 +116,6 @@ public class GalleryFragment extends Fragment {
     }
 
     private void onClickRequestPermission() {
-        MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity == null) {
             return;
         }
@@ -100,4 +150,6 @@ public class GalleryFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+
 }
