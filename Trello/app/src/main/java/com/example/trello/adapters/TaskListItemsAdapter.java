@@ -35,7 +35,6 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
     private ArrayList<Task> list;
 
     private int mPositionDraggedFrom = -1;
-    // A global variable for position dragged TO.
     private int mPositionDraggedTo = -1;
 
     public TaskListItemsAdapter(Context context, ArrayList<Task> list) {
@@ -275,107 +274,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                 return makeMovementFlags(dragFlags, swipeFlags);
             }
         };
-//        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
-//                // Notify Adapter of the moved item!
-//                //recyclerView.getAdapter().notifyItemMoved(dragged.getAdapterPosition(), target.getAdapterPosition());
-//                int draggedPosition = dragged.getAdapterPosition();
-//                int targetPosition = target.getAdapterPosition();
-//
-//                if (mPositionDraggedFrom == -1) {
-//                    mPositionDraggedFrom = draggedPosition;
-//                }
-//                mPositionDraggedTo = targetPosition;
-//
-//                /**
-//                 * Swaps the elements at the specified positions in the specified list.
-//                 */
-//                Collections.swap(TaskListItemsAdapter.this.list.get(position).getCards(), draggedPosition, targetPosition);
-//                adapter.notifyItemMoved(draggedPosition, targetPosition);
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                // No swipe action
-//
-//            }
-//
-//            @Override
-//            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-//                super.clearView(recyclerView, viewHolder);
-//                if (mPositionDraggedFrom != -1 && mPositionDraggedTo != -1 && mPositionDraggedFrom != mPositionDraggedTo) {
-//
-//
-//
-//                // Reset the global variables
-//                mPositionDraggedFrom = -1;
-//                mPositionDraggedTo = -1;
-//            }
-//            }
-//        };
 
-
-//        val helper = ItemTouchHelper(object :
-//        ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
-//
-//                /*Called when ItemTouchHelper wants to move the dragged item from its old position to
-//                 the new position.*/
-//            override fun onMove(
-//                    recyclerView:RecyclerView,
-//                    dragged:ViewHolder,
-//                    target:ViewHolder
-//                ):Boolean {
-//                val draggedPosition = dragged.adapterPosition
-//                val targetPosition = target.adapterPosition
-//
-//                if (mPositionDraggedFrom == -1) {
-//                    mPositionDraggedFrom = draggedPosition
-//                }
-//                mPositionDraggedTo = targetPosition
-//
-//                /**
-//                 * Swaps the elements at the specified positions in the specified list.
-//                 */
-//                Collections.swap(list[position].cards, draggedPosition, targetPosition)
-//
-//                // move item in `draggedPosition` to `targetPosition` in adapter.
-//                adapter.notifyItemMoved(draggedPosition, targetPosition)
-//
-//                return false // true if moved, false otherwise
-//            }
-//
-//            // Called when a ViewHolder is swiped by the user.
-//            override fun onSwiped(
-//                    viewHolder:ViewHolder,
-//                    direction:Int
-//                ){ // remove from adapter
-//            }
-//
-//                /*Called by the ItemTouchHelper when the user interaction with an element is over and it
-//                 also completed its animation.*/
-//            fun clearView (recyclerView:RecyclerView, viewHolder:ViewHolder){
-//                super.clearView(recyclerView, viewHolder)
-//
-//                if (mPositionDraggedFrom != -1 && mPositionDraggedTo != -1 && mPositionDraggedFrom != mPositionDraggedTo) {
-//
-//                    (context as TaskListActivity).updateCardsInTaskList(
-//                            position,
-//                            list[position].cards
-//                    )
-//                }
-//
-//                // Reset the global variables
-//                mPositionDraggedFrom = -1
-//                mPositionDraggedTo = -1
-//            }
-//        })
-
-            /*Attaches the ItemTouchHelper to the provided RecyclerView. If TouchHelper is already
-            attached to a RecyclerView, it will first detach from the previous one.*/
-
-        //helper.attachToRecyclerView(holder.itemView.rv_card_list)
         }
 
     }
