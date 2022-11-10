@@ -7,11 +7,15 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -83,9 +87,9 @@ public class CreateBoardActivity extends BaseActivity {
         }
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user.getDisplayName()==null){
+        if (user.getDisplayName() == null) {
             mUserName = user.getEmail();
-        }else{
+        } else {
             mUserName = user.getDisplayName();
         }
         bindingAction();
@@ -151,7 +155,7 @@ public class CreateBoardActivity extends BaseActivity {
     private void createBoard() {
         ArrayList assignedUsersArrayList = new ArrayList();
         assignedUsersArrayList.add(getCurrentUserID());
-        Board board = new Board(et_board_name.getText().toString(), mBoardImageURL, mUserName, assignedUsersArrayList);
+        Board board = new Board(et_board_name.getText().toString(), mBoardImageURL, mUserName, assignedUsersArrayList,"abc");
         FirestoreClass.createBoard(this, board);
     }
 

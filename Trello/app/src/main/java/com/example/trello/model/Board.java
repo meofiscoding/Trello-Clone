@@ -1,9 +1,12 @@
 package com.example.trello.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Board implements Serializable {
+public class Board implements Parcelable {
     private String name;
     private String image;
     private String createdby;
@@ -12,6 +15,14 @@ public class Board implements Serializable {
     private ArrayList taskList;
 
     public Board() {
+    }
+
+    public Board(String name, String image, String createdby, ArrayList<String> assignedto, String documentId) {
+        this.name = name;
+        this.image = image;
+        this.createdby = createdby;
+        this.assignedto = assignedto;
+        this.documentId = documentId;
     }
 
     public Board(String name, String image, String createdby, ArrayList<String> assignedUsersArrayList) {
@@ -29,6 +40,26 @@ public class Board implements Serializable {
         this.documentId = documentId;
         this.taskList = taskList;
     }
+
+    protected Board(Parcel in) {
+        name = in.readString();
+        image = in.readString();
+        createdby = in.readString();
+        assignedto = in.createStringArrayList();
+        documentId = in.readString();
+    }
+
+    public static final Creator<Board> CREATOR = new Creator<Board>() {
+        @Override
+        public Board createFromParcel(Parcel in) {
+            return new Board(in);
+        }
+
+        @Override
+        public Board[] newArray(int size) {
+            return new Board[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -79,4 +110,17 @@ public class Board implements Serializable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(image);
+        dest.writeString(createdby);
+        dest.writeStringList(assignedto);
+        dest.writeString(documentId);
+    }
 }

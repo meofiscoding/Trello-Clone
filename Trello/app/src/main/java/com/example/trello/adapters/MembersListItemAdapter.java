@@ -16,53 +16,58 @@ import com.example.trello.model.User;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MembersListItemAdapter extends RecyclerView.Adapter {
+public class MembersListItemAdapter extends RecyclerView.Adapter<MembersListItemAdapter.MyViewHolder> {
     private Context context;
-    private ArrayList<User> list;
+    private List<User> list;
 
 
-    public MembersListItemAdapter(Context context, ArrayList<User> list) {
+    public MembersListItemAdapter(Context context) {
         this.context = context;
-        this.list = list;
     }
 
+    public void setData(List<User> uList){
+        this.list = uList;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item_member,parent,false);
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(context).inflate(R.layout.item_member, parent, false);
         return new MembersListItemAdapter.MyViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         User item = list.get(position);
-        if(holder instanceof MembersListItemAdapter.MyViewHolder){
-            View v = holder.itemView;
-            TextView tv_name = v.findViewById(R.id.tv_member_name);
-            TextView tv_email = v.findViewById(R.id.tv_member_name);
-            ImageView iv = v.findViewById(R.id.iv_selected_member);
-            tv_name.setText(item.getName());
-            tv_email.setText(item.getEmail());
-            if(item.isSelected()){
-                iv.setVisibility(View.VISIBLE);
-            }else{
-                iv.setVisibility(View.GONE);
-            }
+        if (item == null) {
+            return;
         }
+        Glide.with(context).load(item.getImage()).centerCrop().placeholder(R.drawable.ic_user_place_holder).into(holder.userAvatar);
+        holder.username.setText(item.getName());
+        holder.email.setText(item.getEmail());
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (list != null){
+            return list.size();
+        }
+        return 0;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        private ImageView userAvatar;
+        private TextView email;
+        private TextView username;
+
         public MyViewHolder(@NotNull View view) {
             super(view);
-
+            email = view.findViewById(R.id.tv_member_email);
+            userAvatar = view.findViewById(R.id.iv_member_image);
+            username = view.findViewById(R.id.tv_member_name);
         }
     }
 }

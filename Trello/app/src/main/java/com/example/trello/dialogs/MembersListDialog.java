@@ -48,7 +48,7 @@ public abstract class MembersListDialog extends Dialog {
         tv_Title.setText(title);
         if(list.size()>0){
             rvList.setLayoutManager(new LinearLayoutManager(context));
-            MembersListItemAdapter adapter = new MembersListItemAdapter(context,list);
+            MembersListItemAdapter adapter = new MembersListItemAdapter(context);
             rvList.setAdapter(adapter);
             rvList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rvList, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override

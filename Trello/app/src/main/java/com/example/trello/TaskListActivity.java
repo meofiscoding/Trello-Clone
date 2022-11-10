@@ -1,54 +1,32 @@
 package com.example.trello;
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trello.adapters.TaskListItemsAdapter;
 import com.example.trello.firebase.FirestoreClass;
 import com.example.trello.model.Board;
 import com.example.trello.model.Card;
 import com.example.trello.model.Task;
-import com.example.trello.model.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import androidx.annotation.NonNull;
-
-import androidx.appcompat.app.ActionBar;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import androidx.appcompat.widget.Toolbar;
-
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.ItemTouchHelper;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class TaskListActivity extends BaseActivity {
@@ -81,18 +59,17 @@ public class TaskListActivity extends BaseActivity {
     private void bindingAction() {
 
 
-
-        rv_task_list.setLayoutManager( new
+        rv_task_list.setLayoutManager(new
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rv_task_list.setHasFixedSize(true);
-        if(tasks==null){
-            tasks= new ArrayList<>();
+        if (tasks == null) {
+            tasks = new ArrayList<>();
             //tasks.add(new Task("Good Morning","Thinh","ABCDEF" ));
         }
 
-        for(Task task: tasks){
-            if(cards !=null){
-                if(cards.containsKey(task.getTitle())) {
+        for (Task task : tasks) {
+            if (cards != null) {
+                if (cards.containsKey(task.getTitle())) {
                     task.setCards(cards.get(task.getTitle()));
                 }
             }
@@ -137,27 +114,30 @@ public class TaskListActivity extends BaseActivity {
         toolbar = findViewById(R.id.toolbar_task_list_activity);
         rv_task_list = findViewById(R.id.rv_task_list);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
-        if(this.getIntent().hasExtra(Constants.DOCUMENT_ID)){
+        if (this.getIntent().hasExtra(Constants.DOCUMENT_ID)) {
             mBoardDocumentId = this.getIntent().getStringExtra(Constants.DOCUMENT_ID);
 
         }
-        FirestoreClass firestoreClass= new FirestoreClass();
-        firestoreClass.getBoardDetails(this,mBoardDocumentId);
+        FirestoreClass firestoreClass = new FirestoreClass();
+        firestoreClass.getBoardDetails(this, mBoardDocumentId);
 //        firestoreClass.getTaskDetails(this,mBoardDocumentId);
         getData();
         // getListItems(mBoardDocumentId);
 
     }
-    public void getData(){
-        FirestoreClass firestoreClass= new FirestoreClass();
-        firestoreClass.getBoardDetails(this,mBoardDocumentId);
-        firestoreClass.getTaskDetails(this,mBoardDocumentId);
+
+    public void getData() {
+        FirestoreClass firestoreClass = new FirestoreClass();
+        firestoreClass.getBoardDetails(this, mBoardDocumentId);
+        firestoreClass.getTaskDetails(this, mBoardDocumentId);
         //firestoreClass.getCardDetails(this,tasks);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -166,7 +146,7 @@ public class TaskListActivity extends BaseActivity {
         setupActionBar();
     }
 
-    private  void setupActionBar(){
+    private void setupActionBar() {
         setSupportActionBar(toolbar);
         ActionBar actionBar = this.getSupportActionBar();
         if (actionBar != null) {
@@ -183,71 +163,87 @@ public class TaskListActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                Intent intent = new Intent(TaskListActivity.this, MemberActivity.class);
+                intent.putExtra("boardDetails",mBoardDetails);
+                startActivity(intent);
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onBackPressed() {
-        Intent i = new Intent(this,MainActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
 
-    public boolean onCreateOptionsMenu(Menu menu){
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-        if(resultCode == Activity.RESULT_OK&&(requestCode == MEMBERS_REQUEST_CODE || requestCode == CARD_DETAILS_REQUEST_CODE)){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && (requestCode == MEMBERS_REQUEST_CODE || requestCode == CARD_DETAILS_REQUEST_CODE)) {
             showProgressDialog("Please wait");
         }
     }
-    public void taskDetails(ArrayList taskList){
+
+    public void taskDetails(ArrayList taskList) {
         tasks = taskList;
         bindingView();
         bindingAction();
         setupActionBar();
     }
 
-    public void carddetail(HashMap<String, ArrayList<Card>> cartgets){
-        cards= cartgets;
+    public void carddetail(HashMap<String, ArrayList<Card>> cartgets) {
+        cards = cartgets;
         bindingView();
         bindingAction();
         setupActionBar();
     }
 
-    public void boardDetails(Board board){
+    public void boardDetails(Board board) {
         mBoardDetails = board;
         setupActionBar();
     }
 
-    public void createTaskList(String taskListName){
+    public void createTaskList(String taskListName) {
         mBoardDetails.setDocumentId(mBoardDocumentId);
-        Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
-        if(mBoardDetails.getTaskList()!=null){
-            mBoardDetails.getTaskList().add(0,task);
-        }else{
+        Task task = new Task(taskListName, FirestoreClass.getCurrentUserID(), mBoardDetails.getName());
+        if (mBoardDetails.getTaskList() != null) {
+            mBoardDetails.getTaskList().add(0, task);
+        } else {
             ArrayList<Task> taskList = new ArrayList<>();
             mBoardDetails.setTaskList(taskList);
             mBoardDetails.getTaskList().add(task);
         }
 
-        FirestoreClass firestoreClass= new FirestoreClass();
+        FirestoreClass firestoreClass = new FirestoreClass();
         firestoreClass.addUpdateTaskList(this, task);
         getData();
     }
-    public void cardDetatils(int taskListPosition, int cardPosition){
-        Intent intent = new Intent(this,CardDetailsActivity.class);
+
+    public void cardDetatils(int taskListPosition, int cardPosition) {
+        Intent intent = new Intent(this, CardDetailsActivity.class);
         startActivity(intent);
     }
 
-    public void updateTaskList(String taskListName){
-        Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
-        FirestoreClass firestoreClass= new FirestoreClass();
+    public void updateTaskList(String taskListName) {
+        Task task = new Task(taskListName, FirestoreClass.getCurrentUserID(), mBoardDetails.getName());
+        FirestoreClass firestoreClass = new FirestoreClass();
         firestoreClass.addUpdateTaskList(this, task);
         getData();
     }
 
-    public void cardDetatils(String taskName, int cardPosition){
-        Intent intent = new Intent(this,CardDetailsActivity.class);
-        FirestoreClass firestoreClass= new FirestoreClass();
+    public void cardDetatils(String taskName, int cardPosition) {
+        Intent intent = new Intent(this, CardDetailsActivity.class);
+        FirestoreClass firestoreClass = new FirestoreClass();
         //ArrayList<Card> cardArrayList = firestoreClass.getCardsByTaskname(taskName);
         //Card card = cardArrayList.get(cardPosition);
         //intent.putExtra("card",card);
@@ -255,26 +251,23 @@ public class TaskListActivity extends BaseActivity {
 
     }
 
-    public void addUpdateTaskListSuccess(){
+    public void addUpdateTaskListSuccess() {
         hideProgressDialog();
         showProgressDialog("Please Wait");
     }
 
-    public void addCardToTaskList(int position, String cardName){
+    public void addCardToTaskList(int position, String cardName) {
 
         //ArrayList<String> cardAssignedUsersList = new ArrayList<>();
         // cardAssignedUsersList.add(FirestoreClass.getCurrentUserID());
-        Card card = new Card(cardName,tasks.get(position).getTitle());
+        Card card = new Card(cardName, tasks.get(position).getTitle());
 
         //showProgressDialog("Please Wait");
 
-        FirestoreClass firestoreClass =new FirestoreClass();
+        FirestoreClass firestoreClass = new FirestoreClass();
         firestoreClass.addUpdateCard(this, card);
         getData();
     }
-
-
-
 
 
 }
