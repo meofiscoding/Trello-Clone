@@ -45,6 +45,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".CardDetailsActivity"
+            android:exported="false">
+
+        </activity>
+        <activity
             android:name=".CreateBoardActivity"
             android:exported="false" />
         <activity

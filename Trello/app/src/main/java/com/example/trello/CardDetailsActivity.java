@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CardDetailsActivity extends BaseActivity {
+    private Card card;
     private Board mBoardDetails;
     private int mTaskListPosition = -1;
     private int mCardPosition = -1;
@@ -76,7 +77,7 @@ public class CardDetailsActivity extends BaseActivity {
                 labelColorsListDialog();
             }
         });
-        setupSelectedMembersList();
+        //setupSelectedMembersList();
         tv_select_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,7 +126,7 @@ public class CardDetailsActivity extends BaseActivity {
     public boolean onOptionItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.action_delete_card:
-                alertDialogForDeleteCard(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
+                //alertDialogForDeleteCard(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -138,8 +139,6 @@ public class CardDetailsActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp);
-            actionBar.setTitle("Demo Card");
-            //actionBar.setTitle(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +163,9 @@ public class CardDetailsActivity extends BaseActivity {
 
         if (this.getIntent().hasExtra("board_members_list")) {
             this.mMembersDetailList = this.getIntent().getParcelableArrayListExtra("board_members_list");
+        }
+        if (this.getIntent().hasExtra("card")) {
+            this.card = (Card) this.getIntent().getSerializableExtra("card");
         }
     }
 

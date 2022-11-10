@@ -1,6 +1,7 @@
 package com.example.trello.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -52,6 +54,29 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         layoutParams.setMargins(15,0,40,0);
         view.setLayoutParams((android.view.ViewGroup.LayoutParams) layoutParams);
         return new TaskListItemsAdapter.TaskViewHolder(view);
+    }
+
+    private void alertDialogForDeleteList(int position,String title){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.alert);
+        builder.setMessage("Are you sure you want to delete "+ title+" ?");
+        builder.setIcon(R.drawable.ic_delete);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                //((TaskListActivity) context).deleteTaskList(title);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.show();
     }
 
 
@@ -167,8 +192,8 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
                 if (!listName.equals("")) {
                     if (context instanceof TaskListActivity){
-                        //FIXME
-                        //context.updateTaskList(position, listName, model)
+                        ((TaskListActivity) context).updateTaskList(listName);
+                        ((TaskListActivity) context).getData();
                     }
                 } else {
                     Toast.makeText(context, "Please Enter List Name.", Toast.LENGTH_SHORT).show();
@@ -179,7 +204,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
        holder.ib_delete_list.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-              // alertDialogForDeleteList(position, model.getTitle());
+              alertDialogForDeleteList(position, model.getTitle());
            }
        });
 
@@ -204,7 +229,8 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
                         if (!cardName.equals("")) {
                             if (context instanceof TaskListActivity){
-                               // context.addCardToTaskList(position, cardName)
+                                ((TaskListActivity) context).addCardToTaskList(position, cardName);
+                                ((TaskListActivity) context).getData();
                             }
                         } else {
                             Toast.makeText(context, "Please Enter Card Detail.", Toast.LENGTH_SHORT)
@@ -229,7 +255,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                 @Override
                 public void onItemClick(View view, int cardPosition) {
                     if(context instanceof TaskListActivity){
-                        ((TaskListActivity) context).cardDetatils(position,cardPosition);
+                        ((TaskListActivity) context).cardDetatils(list.get(position).getTitle(),cardPosition);
                     }
                 }
 
@@ -237,6 +263,15 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                 public void onLongItemClick(View view, int position) {
                 }
             }));
+
+//        adapter.setOnClickListener(object :
+//        CardListItemsAdapter.OnClickListener {
+//            override fun onClick(cardPosition:Int){
+//                if (context is TaskListActivity){
+//                    context.cardDetails(position, cardPosition)
+//                }
+//            }
+//        })
 
         /**
          * Creates a divider {@link RecyclerView.ItemDecoration} that can be used with a
@@ -285,6 +320,8 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
     }
 
+
+
     @Override
     public int getItemCount() {
         return list.size()+1;
@@ -314,6 +351,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
+            et_card_name = itemView.findViewById(R.id.et_card_name);
             tv_add_task_list = itemView.findViewById(R.id.tv_add_task_list);
             cv_add_task_list_name = itemView.findViewById(R.id.cv_add_task_list_name);
             ib_close_list_name = itemView.findViewById(R.id.ib_close_list_name);
