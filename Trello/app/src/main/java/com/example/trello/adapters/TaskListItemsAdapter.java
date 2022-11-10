@@ -56,16 +56,16 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         return new TaskListItemsAdapter.TaskViewHolder(view);
     }
 
-    private void alertDialogForDeleteList(int position,String title){
+    private void alertDialogForDeleteList(int position,Task model){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.alert);
-        builder.setMessage("Are you sure you want to delete "+ title+" ?");
+        builder.setMessage("Are you sure you want to delete "+ model.getTitle()+" ?");
         builder.setIcon(R.drawable.ic_delete);
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                //((TaskListActivity) context).deleteTaskList(title);
+                ((TaskListActivity) context).deleteTaskList(model);
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener(){
@@ -204,7 +204,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             holder.ib_delete_list.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    alertDialogForDeleteList(position, model.getTitle());
+                    alertDialogForDeleteList(position, model);
                 }
             });
 
@@ -255,7 +255,7 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                 @Override
                 public void onItemClick(View view, int cardPosition) {
                     if(context instanceof TaskListActivity){
-                        ((TaskListActivity) context).cardDetatils(list.get(position).getTitle(),cardPosition);
+                        ((TaskListActivity) context).getCardList(list.get(position).getTitle(),cardPosition);
                     }
                 }
 
@@ -315,6 +315,8 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                     return makeMovementFlags(dragFlags, swipeFlags);
                 }
             };
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+            itemTouchHelper.attachToRecyclerView(holder.rv_card_list);
 
         }
 

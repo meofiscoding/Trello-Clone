@@ -9,7 +9,27 @@ public class Board implements Serializable {
     private String createdby;
     private ArrayList<String> assignedto;
     private String documentId;
-    private ArrayList taskList;
+    private ArrayList<Task> taskList;
+    private String createdTime;
+
+    public Board(String name, String image, String createdby, ArrayList<String> assignedto, String documentId, ArrayList taskList, String createdTime) {
+        this.name = name;
+        this.image = image;
+        this.createdby = createdby;
+        this.assignedto = assignedto;
+        this.documentId = documentId;
+        this.taskList = taskList;
+        this.createdTime = createdTime;
+    }
+
+    public Board(String name, String image, String createdby, ArrayList<String> assignedto, String documentId, String createdTime) {
+        this.name = name;
+        this.image = image;
+        this.createdby = createdby;
+        this.assignedto = assignedto;
+        this.documentId = documentId;
+        this.createdTime = createdTime;
+    }
 
     public Board() {
     }
@@ -28,6 +48,14 @@ public class Board implements Serializable {
         this.assignedto = assignedto;
         this.documentId = documentId;
         this.taskList = taskList;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
     }
 
     public String getName() {
@@ -70,11 +98,11 @@ public class Board implements Serializable {
         this.documentId = documentId;
     }
 
-    public ArrayList getTaskList() {
+    public ArrayList<Task> getTaskList() {
         return taskList;
     }
 
-    public void setTaskList(ArrayList taskList) {
+    public void setTaskList(ArrayList<Task> taskList) {
         this.taskList = taskList;
     }
 

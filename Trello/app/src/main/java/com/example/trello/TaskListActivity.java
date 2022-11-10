@@ -46,6 +46,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -219,7 +220,6 @@ public class TaskListActivity extends BaseActivity {
     }
 
     public void createTaskList(String taskListName){
-        mBoardDetails.setDocumentId(mBoardDocumentId);
         Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
         if(mBoardDetails.getTaskList()!=null){
             mBoardDetails.getTaskList().add(0,task);
@@ -230,7 +230,8 @@ public class TaskListActivity extends BaseActivity {
         }
 
         FirestoreClass firestoreClass= new FirestoreClass();
-        firestoreClass.addUpdateTaskList(this, task);
+        firestoreClass.addUpdateTaskList(this, task,mBoardDetails);
+        //firestoreClass.updateTaskList(this,mBoardDetails);
         getData();
     }
     public void cardDetatils(int taskListPosition, int cardPosition){
@@ -241,18 +242,21 @@ public class TaskListActivity extends BaseActivity {
     public void updateTaskList(String taskListName){
         Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
         FirestoreClass firestoreClass= new FirestoreClass();
-        firestoreClass.addUpdateTaskList(this, task);
+        //firestoreClass.UpdateTaskList(this, task);
         getData();
     }
 
-    public void cardDetatils(String taskName, int cardPosition){
-        Intent intent = new Intent(this,CardDetailsActivity.class);
+    public void getCardList(String taskName, int cardPosition){
         FirestoreClass firestoreClass= new FirestoreClass();
-        //ArrayList<Card> cardArrayList = firestoreClass.getCardsByTaskname(taskName);
-        //Card card = cardArrayList.get(cardPosition);
-        //intent.putExtra("card",card);
-        startActivity(intent);
+        ArrayList<Card> cardArrayList = firestoreClass.getCardsByTaskname(this,taskName,cardPosition);
 
+    }
+
+    public void cardDetail(ArrayList<Card> listCards,int position){
+        Intent intent = new Intent(this, CardDetailsActivity.class);
+        Card card = listCards.get(position);
+        intent.putExtra("card", card);
+        startActivity(intent);
     }
 
     public void addUpdateTaskListSuccess(){
@@ -274,7 +278,9 @@ public class TaskListActivity extends BaseActivity {
     }
 
 
-
-
-
+    public void deleteTaskList(Task model) {
+        FirestoreClass firestoreClass =new FirestoreClass();
+        firestoreClass.deleteTask(this, model);
+        getData();
+    }
 }

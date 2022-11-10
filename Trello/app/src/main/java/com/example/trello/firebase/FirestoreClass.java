@@ -17,13 +17,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.protobuf.Any;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +35,14 @@ import java.util.Map;
 public class FirestoreClass {
     private static final FirebaseFirestore mFireStore = FirebaseFirestore.getInstance();
 
-    public  void addUpdateTaskList(Activity activity,  Task task) {
+    public  void addUpdateTaskList(Activity activity,  Task task,Board board) {
 
-        mFireStore.collection("tasks").document().set(task, SetOptions.merge())
+        mFireStore.collection("tasks").document(task.getTitle()+task.getBoardname()).set(task, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        //DocumentReference docRef = mFireStore.collection("boards").document(board.getName());
+                        //docRef.update("taskList",board.getTaskList());
                         Log.e(activity.getClass().getSimpleName(), "Task created successfully.");
                         Toast.makeText((Context)activity, (CharSequence)"Task created successfully.", Toast.LENGTH_LONG).show();
                         //activity.boardCreatedSuccessfully();
@@ -47,6 +53,29 @@ public class FirestoreClass {
                 });
     }
 
+    public void updateCard(Activity activity,Card card,Card cardUpdate){
+        DocumentReference docRef = mFireStore.collection("cards").document(cardUpdate.getName()+card.getTaskname());
+        Map<String,Object> map = new HashMap<>();
+        map.put("name",cardUpdate.getName());
+        map.put("labelColor",cardUpdate.getLabelColor());
+        map.put("dueDate",cardUpdate.getDueDate());
+        map.put("assignedTo",cardUpdate.getAssignedTo());
+        map.put("createdBy",cardUpdate.getCreatedBy());
+        map.put("taskname",cardUpdate.getTaskname());
+
+        docRef.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                DocumentReference docRef2 = mFireStore.collection("cards").document(card.getName()+card.getTaskname());
+                docRef2.delete();
+                if(activity instanceof CardDetailsActivity){
+                    ((CardDetailsActivity) activity).addUpdateTaskListSuccess();
+                }
+
+            }
+        });
+    }
+
     public void UpdateTaskList(Activity activity, Board board){
         HashMap<String, Any> taskListHaspMap;
 
@@ -54,7 +83,7 @@ public class FirestoreClass {
 
     public  void addUpdateCard(TaskListActivity activity,  Card card) {
 
-        mFireStore.collection("cards").document().set(card, SetOptions.merge())
+        mFireStore.collection("cards").document(card.getName()+card.getTaskname()).set(card, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -68,7 +97,29 @@ public class FirestoreClass {
     }
 
     public static final void createBoard(CreateBoardActivity activity, Board board) {
-        mFireStore.collection(Constants.BOARDS).document().set(board, SetOptions.merge())
+//        DocumentReference docRef = mFireStore.collection(Constants.BOARDS).document(board.getDocumentId());
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("name",board.getName());
+//        map.put("image",board.getImage());
+//        map.put("createdby",board.getCreatedby());
+//        map.put("assignedto",board.getAssignedto());
+//        map.put("documentId",board.getDocumentId());
+//        map.put("taskList",board.getTaskList());
+//        map.put("createdTime",board.getCreatedTime());
+//        docRef.set(board).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                Log.e(activity.getClass().getSimpleName(), "Board created successfully.");
+//                Toast.makeText((Context)activity, (CharSequence)"Board created successfully.", Toast.LENGTH_LONG).show();
+//                activity.boardCreatedSuccessfully();
+//            }
+//        }).addOnFailureListener(e->{
+//            activity.hideProgressDialog();
+//            Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
+//        });
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        mFireStore.collection(Constants.BOARDS).document(board.getName()).set(board)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -103,12 +154,7 @@ public class FirestoreClass {
     public void updateTaskList(Activity activity, Board board){
         HashMap<String,ArrayList<Task>> taskListHashMap = new HashMap<>();
         taskListHashMap.put("taskList",board.getTaskList());
-        mFireStore.collection("boards").document(board.getDocumentId()).update("taskList",board.getTaskList()).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-
-            }
-        });
+        mFireStore.collection("boards").document(board.getName()).update("taskList",board.getTaskList());
     }
 
     public void getTaskDetails( TaskListActivity activity,  String board) {
@@ -134,8 +180,8 @@ public class FirestoreClass {
         });
     }
 
-    public void deleteTask(Activity activity,String title){
-        mFireStore.collection("tasks").document("title").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void deleteTask(Activity activity,Task model){
+        mFireStore.collection("tasks").document(model.getTitle()+model.getBoardname()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText((Context)activity, (CharSequence)"Task deleted successfully.", Toast.LENGTH_LONG).show();
@@ -143,7 +189,7 @@ public class FirestoreClass {
         });
     }
 
-    public ArrayList<Card> getCardsByTaskname(String taskName){
+    public ArrayList<Card> getCardsByTaskname(TaskListActivity activity,String taskName,int position){
 
         ArrayList<Card> cardArrayList = new ArrayList<>();
         mFireStore.collection("cards").whereEqualTo("taskname", taskName).get().addOnSuccessListener(new OnSuccessListener() {
@@ -159,6 +205,7 @@ public class FirestoreClass {
                     //board.setDocumentId(d.getId());
                     cardArrayList.add(card);
                 }
+                activity.cardDetail(cardArrayList,position);
             }
         });
         return cardArrayList;

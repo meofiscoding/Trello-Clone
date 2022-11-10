@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CardDetailsActivity extends BaseActivity {
+    private Card card;
     private Board mBoardDetails;
     private int mTaskListPosition = -1;
     private int mCardPosition = -1;
@@ -60,10 +61,12 @@ public class CardDetailsActivity extends BaseActivity {
         getIntentData();
         setupActionBar();
         bindingAction();
-        //alertDialogForDeleteCard("A");
+
     }
 
     private void bindingAction() {
+        et_name_card_details.setText(card.getName());
+        et_name_card_details.setSelection(et_name_card_details.getText().toString().length());
         //et_name_card_details.setText(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
         //et_name_card_details.setSelection(et_name_card_details.getText().toString().length());
         //mSelectedColor = ((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getLabelColor();
@@ -101,7 +104,7 @@ public class CardDetailsActivity extends BaseActivity {
                 if(et_name_card_details.getText().toString().isEmpty()){
                     //Toast.makeText(this,"Enter card name",Toast.LENGTH_SHORT).show();
                 }else{
-                    //updateCardDetails();
+                    updateCardDetails();
                 }
             }
         });
@@ -138,7 +141,7 @@ public class CardDetailsActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp);
-            actionBar.setTitle("Demo Card");
+            actionBar.setTitle(card.getName());
             //actionBar.setTitle(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -165,6 +168,9 @@ public class CardDetailsActivity extends BaseActivity {
         if (this.getIntent().hasExtra("board_members_list")) {
             this.mMembersDetailList = this.getIntent().getParcelableArrayListExtra("board_members_list");
         }
+        if (this.getIntent().hasExtra("card")) {
+            this.card = (Card) this.getIntent().getSerializableExtra("card");
+        }
     }
 
     public void addUpdateTaskListSuccess(){
@@ -174,16 +180,18 @@ public class CardDetailsActivity extends BaseActivity {
     }
 
     private void updateCardDetails(){
-        Card card = new Card(et_name_card_details.getText().toString()
-        ,((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getCreatedBy()
-        ,((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getAssignedTo()
+        Card cardUpdate = new Card(et_name_card_details.getText().toString()
+                ,card.getCreatedBy()
+                ,card.getAssignedTo()
         , mSelectedColor
-        ,mSelectedDueDateMilliSeconds);
-        ArrayList<Task> taskList = mBoardDetails.getTaskList();
-        taskList.remove(taskList.size()-1);
-        ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().set(this.mCardPosition, card);
+        ,mSelectedDueDateMilliSeconds
+        ,card.getTaskname());
+//        ArrayList<Task> taskList = mBoardDetails.getTaskList();
+//        taskList.remove(taskList.size()-1);
+//        ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().set(this.mCardPosition, card);
         //showProgressDialog("Please Wait");
-        //FirestoreClass.addUpdateTaskList(this, mBoardDetails);
+        FirestoreClass firestoreClass = new FirestoreClass();
+        firestoreClass.updateCard(this, card,cardUpdate);
     }
 
     private final void deleteCard() {
