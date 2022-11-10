@@ -1,5 +1,6 @@
 package com.example.trello;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -46,6 +47,7 @@ public class MemberActivity extends AppCompatActivity {
     private RecyclerView recyclerViewMemberList;
     private Dialog dialog;
     private List<User> assignedMemberList;
+    private Boolean anyChange = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +116,7 @@ public class MemberActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void unused) {
                 assignedMemberList.add(user);
+                anyChange = true;
                 setupMemberList(assignedMemberList);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -122,6 +125,14 @@ public class MemberActivity extends AppCompatActivity {
                 Log.e("Error","Cannot add member");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (anyChange){
+            setResult(Activity.RESULT_OK);
+        }
+        super.onBackPressed();
     }
 
     private void getMemberDetailsActivity(String email){

@@ -3,6 +3,7 @@ package com.example.trello;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,10 +42,8 @@ public class TaskListActivity extends BaseActivity {
     private FirestoreRecyclerAdapter<Task, TaskListItemsAdapter.TaskViewHolder> adapter;
     private ArrayList<Task> tasks;
     private HashMap<String, ArrayList<Card>> cards;
-
-
+    private static final int REQUEST_CODE_EXAMPLE = 13;
     private RecyclerView rv_card_list;
-
 
     public ArrayList getmAssignedMembersDetailList() {
         return mAssignedMembersDetailList;
@@ -146,6 +145,11 @@ public class TaskListActivity extends BaseActivity {
         setupActionBar();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void setupActionBar() {
         setSupportActionBar(toolbar);
         ActionBar actionBar = this.getSupportActionBar();
@@ -175,8 +179,8 @@ public class TaskListActivity extends BaseActivity {
             case R.id.action_settings:
                 Intent intent = new Intent(TaskListActivity.this, MemberActivity.class);
                 intent.putExtra("boardDetails",mBoardDetails);
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent, REQUEST_CODE_EXAMPLE);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -191,6 +195,10 @@ public class TaskListActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && (requestCode == MEMBERS_REQUEST_CODE || requestCode == CARD_DETAILS_REQUEST_CODE)) {
             showProgressDialog("Please wait");
+            FirestoreClass firestoreClass = new FirestoreClass();
+            firestoreClass.getBoardDetails(this,mBoardDocumentId);
+        }else{
+            Log.e("Canceled", "cancel");
         }
     }
 
