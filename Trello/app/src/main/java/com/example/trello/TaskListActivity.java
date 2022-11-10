@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -221,19 +222,20 @@ public class TaskListActivity extends BaseActivity {
         setupActionBar();
     }
 
-    public void createTaskList(String taskListName) {
-        mBoardDetails.setDocumentId(mBoardDocumentId);
-        Task task = new Task(taskListName, FirestoreClass.getCurrentUserID(), mBoardDetails.getName());
-        if (mBoardDetails.getTaskList() != null) {
-            mBoardDetails.getTaskList().add(0, task);
-        } else {
+    public void createTaskList(String taskListName){
+        Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
+        if(mBoardDetails.getTaskList()!=null){
+            mBoardDetails.getTaskList().add(0,task);
+        }else{
             ArrayList<Task> taskList = new ArrayList<>();
             mBoardDetails.setTaskList(taskList);
             mBoardDetails.getTaskList().add(task);
         }
 
-        FirestoreClass firestoreClass = new FirestoreClass();
-        firestoreClass.addUpdateTaskList(this, task);
+
+        FirestoreClass firestoreClass= new FirestoreClass();
+        firestoreClass.addUpdateTaskList(this, task,mBoardDetails);
+        //firestoreClass.updateTaskList(this,mBoardDetails);
         getData();
     }
 
@@ -242,24 +244,29 @@ public class TaskListActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void updateTaskList(String taskListName) {
-        Task task = new Task(taskListName, FirestoreClass.getCurrentUserID(), mBoardDetails.getName());
-        FirestoreClass firestoreClass = new FirestoreClass();
-        firestoreClass.addUpdateTaskList(this, task);
+
+    public void updateTaskList(String taskListName){
+        Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
+        FirestoreClass firestoreClass= new FirestoreClass();
+        //firestoreClass.UpdateTaskList(this, task);
         getData();
     }
 
-    public void cardDetatils(String taskName, int cardPosition) {
-        Intent intent = new Intent(this, CardDetailsActivity.class);
-        FirestoreClass firestoreClass = new FirestoreClass();
-        //ArrayList<Card> cardArrayList = firestoreClass.getCardsByTaskname(taskName);
-        //Card card = cardArrayList.get(cardPosition);
-        //intent.putExtra("card",card);
-        startActivity(intent);
+    public void getCardList(String taskName, int cardPosition){
+        FirestoreClass firestoreClass= new FirestoreClass();
+        ArrayList<Card> cardArrayList = firestoreClass.getCardsByTaskname(this,taskName,cardPosition);
 
     }
 
-    public void addUpdateTaskListSuccess() {
+    public void cardDetail(ArrayList<Card> listCards,int position){
+        Intent intent = new Intent(this, CardDetailsActivity.class);
+        Card card = listCards.get(position);
+        intent.putExtra("card", card);
+        startActivity(intent);
+    }
+
+    public void addUpdateTaskListSuccess(){
+
         hideProgressDialog();
         showProgressDialog("Please Wait");
     }
@@ -278,4 +285,10 @@ public class TaskListActivity extends BaseActivity {
     }
 
 
+
+    public void deleteTaskList(Task model) {
+        FirestoreClass firestoreClass =new FirestoreClass();
+        firestoreClass.deleteTask(this, model);
+        getData();
+    }
 }

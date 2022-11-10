@@ -1,8 +1,9 @@
 package com.example.trello.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Card {
+public class Card implements Serializable {
     private String name;
     private String createdBy;
     private ArrayList<String> assignedTo;
@@ -19,6 +20,12 @@ public class Card {
     }
 
     public Card() {
+    }
+
+    public Card(String name, String labelColor, Long dueDate) {
+        this.name = name;
+        this.labelColor = labelColor;
+        this.dueDate = dueDate;
     }
 
     public String getTaskname() {

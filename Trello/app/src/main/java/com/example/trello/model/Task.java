@@ -1,8 +1,9 @@
 package com.example.trello.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Task {
+public class Task implements Serializable {
     private String title;
     private String createdBy;
     private String boardname;

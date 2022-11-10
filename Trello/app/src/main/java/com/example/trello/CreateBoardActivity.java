@@ -31,7 +31,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -155,12 +158,17 @@ public class CreateBoardActivity extends BaseActivity {
     private void createBoard() {
         ArrayList assignedUsersArrayList = new ArrayList();
         assignedUsersArrayList.add(getCurrentUserID());
-        Board board = new Board(et_board_name.getText().toString(), mBoardImageURL, mUserName, assignedUsersArrayList,"abc");
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String boardId = et_board_name.getText().toString() + dateFormat.format(date);
+        Board board = new Board(et_board_name.getText().toString(), mBoardImageURL, mUserName, assignedUsersArrayList,boardId,dateFormat.format(date));
+        //Board board = new Board(et_board_name.getText().toString(), mBoardImageURL, mUserName, assignedUsersArrayList);
         FirestoreClass.createBoard(this, board);
     }
 
     public final void boardCreatedSuccessfully() {
-        hideProgressDialog();
+        //hideProgressDialog();
         this.setResult(-1);
         this.finish();
     }
