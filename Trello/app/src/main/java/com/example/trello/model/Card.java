@@ -18,6 +18,9 @@ public class Card {
         this.dueDate = dueDate;
     }
 
+    public Card() {
+    }
+
     public String getTaskname() {
         return taskname;
     }

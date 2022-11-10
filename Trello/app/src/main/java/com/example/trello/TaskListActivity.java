@@ -90,14 +90,12 @@ public class TaskListActivity extends BaseActivity {
             //tasks.add(new Task("Good Morning","Thinh","ABCDEF" ));
         }
 
-            for(Task task: tasks){
-                if(cards !=null){
+        for(Task task: tasks){
+            if(cards !=null){
                 if(cards.containsKey(task.getTitle())) {
                     task.setCards(cards.get(task.getTitle()));
                 }
-            }else {
-                    task.getCards().add(new Card("DEMO","BOT"));
-                }
+            }
         }
 
 //        rv_card_list.setLayoutManager( new
@@ -147,18 +145,18 @@ public class TaskListActivity extends BaseActivity {
             mBoardDocumentId = this.getIntent().getStringExtra(Constants.DOCUMENT_ID);
 
         }
-//        FirestoreClass firestoreClass= new FirestoreClass();
-//        firestoreClass.getBoardDetails(this,mBoardDocumentId);
+        FirestoreClass firestoreClass= new FirestoreClass();
+        firestoreClass.getBoardDetails(this,mBoardDocumentId);
 //        firestoreClass.getTaskDetails(this,mBoardDocumentId);
         getData();
-       // getListItems(mBoardDocumentId);
+        // getListItems(mBoardDocumentId);
 
     }
     public void getData(){
         FirestoreClass firestoreClass= new FirestoreClass();
         firestoreClass.getBoardDetails(this,mBoardDocumentId);
         firestoreClass.getTaskDetails(this,mBoardDocumentId);
-        firestoreClass.getCardDetails(this,tasks);
+        //firestoreClass.getCardDetails(this,tasks);
     }
     @Override
     protected void onStart() {
@@ -209,7 +207,7 @@ public class TaskListActivity extends BaseActivity {
     }
 
     public void carddetail(HashMap<String, ArrayList<Card>> cartgets){
-         cards= cartgets;
+        cards= cartgets;
         bindingView();
         bindingAction();
         setupActionBar();
@@ -221,17 +219,41 @@ public class TaskListActivity extends BaseActivity {
     }
 
     public void createTaskList(String taskListName){
+        mBoardDetails.setDocumentId(mBoardDocumentId);
         Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
+        if(mBoardDetails.getTaskList()!=null){
+            mBoardDetails.getTaskList().add(0,task);
+        }else{
+            ArrayList<Task> taskList = new ArrayList<>();
+            mBoardDetails.setTaskList(taskList);
+            mBoardDetails.getTaskList().add(task);
+        }
+
         FirestoreClass firestoreClass= new FirestoreClass();
         firestoreClass.addUpdateTaskList(this, task);
         getData();
     }
     public void cardDetatils(int taskListPosition, int cardPosition){
         Intent intent = new Intent(this,CardDetailsActivity.class);
-startActivity(intent);
+        startActivity(intent);
     }
 
+    public void updateTaskList(String taskListName){
+        Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
+        FirestoreClass firestoreClass= new FirestoreClass();
+        firestoreClass.addUpdateTaskList(this, task);
+        getData();
+    }
 
+    public void cardDetatils(String taskName, int cardPosition){
+        Intent intent = new Intent(this,CardDetailsActivity.class);
+        FirestoreClass firestoreClass= new FirestoreClass();
+        //ArrayList<Card> cardArrayList = firestoreClass.getCardsByTaskname(taskName);
+        //Card card = cardArrayList.get(cardPosition);
+        //intent.putExtra("card",card);
+        startActivity(intent);
+
+    }
 
     public void addUpdateTaskListSuccess(){
         hideProgressDialog();
@@ -241,7 +263,7 @@ startActivity(intent);
     public void addCardToTaskList(int position, String cardName){
 
         //ArrayList<String> cardAssignedUsersList = new ArrayList<>();
-       // cardAssignedUsersList.add(FirestoreClass.getCurrentUserID());
+        // cardAssignedUsersList.add(FirestoreClass.getCurrentUserID());
         Card card = new Card(cardName,tasks.get(position).getTitle());
 
         //showProgressDialog("Please Wait");
@@ -250,6 +272,8 @@ startActivity(intent);
         firestoreClass.addUpdateCard(this, card);
         getData();
     }
+
+
 
 
 
