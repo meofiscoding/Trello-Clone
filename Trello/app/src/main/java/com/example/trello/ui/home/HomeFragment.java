@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.trello.Constants;
 import com.example.trello.R;
 import com.example.trello.RecycleClick.RecyclerItemClickListener;
+import com.example.trello.SplachActivity;
 import com.example.trello.TaskListActivity;
 import com.example.trello.adapters.MyBoardViewHolder;
 import com.example.trello.databinding.FragmentHomeBinding;
@@ -30,6 +31,7 @@ import com.example.trello.onItemClick;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,7 +57,6 @@ public class HomeFragment extends Fragment implements onItemClick {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         root = binding.getRoot();
         bindingView();
@@ -65,14 +66,14 @@ public class HomeFragment extends Fragment implements onItemClick {
         db = FirebaseFirestore.getInstance();
         boardArrayList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
-        boardQuery = db.collection(Constants.BOARDS).whereArrayContains(Constants.ASSIGNED_TO, mAuth.getCurrentUser().getUid());
-
         return root;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        boardQuery = db.collection(Constants.BOARDS).whereArrayContains(Constants.ASSIGNED_TO, mAuth.getCurrentUser().getUid());
         FirestoreRecyclerOptions<Board> boardRecyclerOptions = new FirestoreRecyclerOptions.Builder<Board>()
                 .setQuery(boardQuery, Board.class)
                 .build();

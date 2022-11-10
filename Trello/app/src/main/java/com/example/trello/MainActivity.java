@@ -191,19 +191,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fabCreateCard.setVisibility(View.INVISIBLE);
         }
     }
-    // [START on_start_check_user]
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            startActivity(new Intent(this, SplachActivity.class));
-        } else {
-            Toast.makeText(this, "Welcome " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
-        }
-    }
-    // [END on_start_check_user]
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
