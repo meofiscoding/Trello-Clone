@@ -77,27 +77,6 @@ public class TaskListActivity extends BaseActivity {
 
     private Toolbar toolbar;
 
-//    private void getListItems(String name) {
-//        db.collection("tasks").whereEqualTo("boardname",name).get()
-//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot documentSnapshots) {
-//                        if (documentSnapshots.isEmpty()) {
-//                            Log.d(TAG, "onSuccess: LIST EMPTY");
-//                            return;
-//                        } else {
-//                            // Convert the whole Query Snapshot to a list
-//                            // of objects directly! No need to fetch each
-//                            // document.
-//                            List<Task> types = documentSnapshots.toObjects(Task.class);
-//
-//                            // Add all to your list
-//                            tasks.addAll(types);
-//                            Log.d(TAG, "onSuccess: ");
-//                        }
-//                    }
-//                });
-//    }
 
     private void bindingAction() {
 
@@ -125,33 +104,27 @@ public class TaskListActivity extends BaseActivity {
 //                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 //        rv_card_list.setHasFixedSize(true);
 
-        // Create an instance of TaskListItemsAdapter and pass the task list to it.
         TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, tasks);
         rv_task_list.setAdapter(adapter);
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                // Notify Adapter of the moved item!
                 recyclerView.getAdapter().notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
                 return true;
             }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                // No swipe action
             }
 
             @Override
             public boolean isItemViewSwipeEnabled() {
-                // Disable swipe (dont override this method or return true, if you want to have swipe)
                 return false;
             }
 
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                // Set movement flags to specify the movement direction
-                // final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;  <-- for all directions
-                // In this case only up and down is allowed
+                // Set movement flags to specify the movement
                 final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
                 final int swipeFlags = 0;
                 return makeMovementFlags(dragFlags, swipeFlags);
@@ -218,29 +191,14 @@ public class TaskListActivity extends BaseActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
-        //FIXME
-//        this.getMenuInflater().inflate(R.menu.menu_members,menu);
         return super.onCreateOptionsMenu(menu);
     }
-//FIXME
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch(item.getItemId()) {
-//            case R.id.action_members:
-//                Intent intent = new Intent((Context)this, MembersActivity.class);
-//                intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails);
-//                startActivityForResult(intent, MEMBERS_REQUEST_CODE);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
         if(resultCode == Activity.RESULT_OK&&(requestCode == MEMBERS_REQUEST_CODE || requestCode == CARD_DETAILS_REQUEST_CODE)){
             showProgressDialog("Please wait");
-            //FIXME
-            //FirestoreCLass.getBoardDeatils(this,mBoardDocumentId);
         }
     }
     public void taskDetails(ArrayList taskList){
@@ -248,11 +206,6 @@ public class TaskListActivity extends BaseActivity {
         bindingView();
         bindingAction();
         setupActionBar();
-        //hideProgressDialog();
-        //setupActionBar();
-        // showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass().getAssignedMembersListDetails(this,mBoardDetails.getAssignedto());
     }
 
     public void carddetail(HashMap<String, ArrayList<Card>> cartgets){
@@ -260,31 +213,15 @@ public class TaskListActivity extends BaseActivity {
         bindingView();
         bindingAction();
         setupActionBar();
-        //hideProgressDialog();
-        //setupActionBar();
-        // showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass().getAssignedMembersListDetails(this,mBoardDetails.getAssignedto());
     }
 
     public void boardDetails(Board board){
         mBoardDetails = board;
-        //hideProgressDialog();
         setupActionBar();
-       // showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass().getAssignedMembersListDetails(this,mBoardDetails.getAssignedto());
     }
 
     public void createTaskList(String taskListName){
         Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
-//        if(mBoardDetails.getTaskList()==null){
-//            mBoardDetails.setTaskList(new ArrayList<Task>());
-//        }
-//        mBoardDetails.getTaskList().add(task.toString());
-       // mBoardDetails.getTaskList().remove(mBoardDetails.getTaskList().size()-1);
-        //showProgressDialog("Please Wait");
-        //FIXME
         FirestoreClass firestoreClass= new FirestoreClass();
         firestoreClass.addUpdateTaskList(this, task);
         getData();
@@ -294,29 +231,11 @@ public class TaskListActivity extends BaseActivity {
 startActivity(intent);
     }
 
-//    public void updateTaskList(int position,String listName,Task model){
-//        Task task = new Task(listName,model.getCreatedBy());
-//        //FIXME
-//        mBoardDetails.getTaskList().set(position,task);
-//        mBoardDetails.getTaskList().remove(mBoardDetails.getTaskList().size()-1);
-//        showProgressDialog("Please Wait");
-//        //FIXME
-//        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
-//    }
 
-//    public void deleteTaskList(int position){
-//        mBoardDetails.getTaskList().remove(position);
-//        mBoardDetails.getTaskList().remove(mBoardDetails.getTaskList().size()-1);
-//        showProgressDialog("Please Wait");
-//        //FIXME
-//        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails)
-//    }
 
     public void addUpdateTaskListSuccess(){
         hideProgressDialog();
         showProgressDialog("Please Wait");
-        //FIXME
-        //FirestoreClass().getBoardDetails(this@TaskListActivity, mBoardDetails.documentId)
     }
 
     public void addCardToTaskList(int position, String cardName){
@@ -326,30 +245,11 @@ startActivity(intent);
         Card card = new Card(cardName,tasks.get(position).getTitle());
 
         //showProgressDialog("Please Wait");
-        //FIXME
+
         FirestoreClass firestoreClass =new FirestoreClass();
         firestoreClass.addUpdateCard(this, card);
         getData();
     }
-
-//FIXME
-//    public void updateCardsInTaskList(int taskListPosition,ArrayList<Card> cards){
-//        mBoardDetails.getTaskList().remove(mBoardDetails.getTaskList().size()-1);
-//        ((Task)mBoardDetails.getTaskList().get(taskListPosition)).setCards(cards);
-//        showProgressDialog("Please Wait");
-//        //FIXME
-//        //FirestoreClass().addUpdateTaskList(this@TaskListActivity, mBoardDetails);
-//    }
-
-
-
-       // rv_task_list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-        //rv_task_list.setHasFixedSize(true);
-//        rv_card_list.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-//        rv_card_list.setHasFixedSize(true);
-        //FIXME
-        //TaskListItemsAdapter adapter = new TaskListItemsAdapter(this, mBoardDetails.getTaskList());
-        //rv_task_list.setAdapter(adapter);
 
 
 
