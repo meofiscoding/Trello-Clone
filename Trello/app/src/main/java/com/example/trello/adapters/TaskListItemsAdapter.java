@@ -315,7 +315,8 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                     return makeMovementFlags(dragFlags, swipeFlags);
                 }
             };
-
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+            itemTouchHelper.attachToRecyclerView(holder.rv_card_list);
         }
 
     }
