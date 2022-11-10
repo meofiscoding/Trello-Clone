@@ -1,8 +1,11 @@
 package com.example.trello.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.jetbrains.annotations.NotNull;
 
-public class User {
+public class User implements Parcelable {
     @NotNull
     private  String id;
     @NotNull
@@ -27,6 +30,28 @@ public class User {
     public User() {
     }
 
+
+    protected User(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        email = in.readString();
+        image = in.readString();
+        mobile = in.readString();
+        fcmToken = in.readString();
+        selected = in.readByte() != 0;
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     @NotNull
     public String getId() {
@@ -87,5 +112,21 @@ public class User {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(image);
+        dest.writeString(mobile);
+        dest.writeString(fcmToken);
+        dest.writeByte((byte) (selected ? 1 : 0));
     }
 }

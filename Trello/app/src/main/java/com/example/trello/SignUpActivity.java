@@ -16,12 +16,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.trello.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignUpActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -29,6 +34,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText edtName;
     private EditText edtEmail;
     private EditText edtPassword;
+    private String userId;
+    private FirebaseFirestore firebaseFirestore;
     private static final String TAG = "EmailPassword";
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -62,6 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
         // [START initialize_auth]
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
         // [END initialize_auth]
     }
 
@@ -76,6 +84,16 @@ public class SignUpActivity extends AppCompatActivity {
 
         if (validateField(email, password, name)) {
             progressDialog.show();
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(edtName.getText().toString()).build();
+            mAuth.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("CHANGE NAME", "okeoke");
+                    }
+                }
+            });
             // [START create_user_with_email]
             mAuth.createUserWithEmailAndPassword(email.trim(), password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -83,20 +101,19 @@ public class SignUpActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 progressDialog.dismiss();
+                                InputMethodManager imm = (InputMethodManager) SignUpActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                Toast.makeText(SignUpActivity.this, "Signup successfully!! ", Toast.LENGTH_SHORT).show();
                                 // Sign in success, update UI with the signed-in user's information
-                                Log.d(TAG, "createUserWithEmail:success");
-                                mAuth.sendSignInLinkToEmail(email, buildActionCodeSettings())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    InputMethodManager imm = (InputMethodManager) SignUpActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                                                    Toast.makeText(SignUpActivity.this, "An authentication email has sent to your email,please check your mail it to continue", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-
+                                userId = mAuth.getCurrentUser().getUid();
+                                DocumentReference documentReference = firebaseFirestore.collection("Users").document(userId);
+                                User user = new User(userId, edtName.getText().toString(), edtEmail.getText().toString(), "", "");
+                                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.w(TAG, "createUserWithEmail:success", task.getException());
+                                    }
+                                });
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());

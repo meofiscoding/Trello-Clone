@@ -14,11 +14,16 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.trello.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignInActivity extends AppCompatActivity {
     private String email;
@@ -27,6 +32,7 @@ public class SignInActivity extends AppCompatActivity {
     private EditText edtEmail;
     private EditText edtPwd;
     private TextView txtForgotPwd;
+    private FirebaseFirestore firebaseFirestore;
     //Firebase init
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
@@ -38,6 +44,7 @@ public class SignInActivity extends AppCompatActivity {
         bindingView();
         bindingAction();
         mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
         setuptoolbar();
     }
 
@@ -47,19 +54,18 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void onForgotPwdClick(View view) {
-        Intent intent = new Intent(this,ForgotPassword.class);
+        Intent intent = new Intent(this, ForgotPassword.class);
         startActivity(intent);
     }
 
     private void onSigninClick(View view) {
-        //Get text in form
+//        Get text in form
         email = edtEmail.getText().toString();
         password = edtPwd.getText().toString();
         //validate form
-        if (email.isEmpty() || password.isEmpty()){
+        if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, R.string.ValidateForm, Toast.LENGTH_SHORT).show();
-        }else{
-            //Authentication with Firebase
+        } else {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -67,7 +73,18 @@ public class SignInActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 Toast.makeText(SignInActivity.this, "Welcome back!", Toast.LENGTH_SHORT).show();
-                                showMainActivity();
+                                firebaseFirestore.collection("Users").document(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        var loginUser = documentSnapshot.toObject(User.class);
+                                        if (loginUser != null) {
+                                            Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                                            intent.putExtra("user",loginUser);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }
+                                });
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(SignInActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -75,13 +92,6 @@ public class SignInActivity extends AppCompatActivity {
                         }
                     });
         }
-
-    }
-
-    private void showMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private void bindingView() {

@@ -72,7 +72,6 @@ public class HomeFragment extends Fragment implements onItemClick {
     @Override
     public void onStart() {
         super.onStart();
-
         boardQuery = db.collection(Constants.BOARDS).whereArrayContains(Constants.ASSIGNED_TO, mAuth.getCurrentUser().getUid());
         FirestoreRecyclerOptions<Board> boardRecyclerOptions = new FirestoreRecyclerOptions.Builder<Board>()
                 .setQuery(boardQuery, Board.class)

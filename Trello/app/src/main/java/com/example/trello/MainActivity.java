@@ -15,7 +15,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -30,13 +29,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
-import com.example.trello.databinding.ActivityMainBinding;
+import com.example.trello.model.User;
 import com.example.trello.ui.gallery.GalleryFragment;
 import com.example.trello.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,10 +39,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //Firebase init
     private static final int FRAGMENT_HOME = 0;
     private static final int FRAGMENT_MYPROFILE = 1;
@@ -64,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView imgAvatar;
     private TextView txtUserName;
     private TextView txtEmail;
+    private User user;
     private ActionBarDrawerToggle toggle;
     GalleryFragment galleryFragment = new GalleryFragment();
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -101,10 +98,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bindingAction();
         //load animation
         loadAnimation();
-        toggle = new ActionBarDrawerToggle(this,drawer,toolbar,R.string.open_drawer_navigation, R.string.close_drawer_navigation);
+        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_drawer_navigation, R.string.close_drawer_navigation);
         toggle.syncState();
-            replaceFragment(new HomeFragment());
-            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        replaceFragment(new HomeFragment());
+        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        user = getIntent().getParcelableExtra("user");
         showUserInfo();
     }
 
@@ -144,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 txtUserName.setText(user.getDisplayName());
             }
             txtEmail.setText(user.getEmail());
-            Glide.with(this).load(user.getPhotoUrl()).error(R.drawable.ic_baseline_supervised_user_circle_24).into(imgAvatar);
+            Glide.with(this).load(user.getPhotoUrl()).centerCrop().error(R.drawable.ic_baseline_supervised_user_circle_24).into(imgAvatar);
         }
     }
 
@@ -236,20 +234,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.nav_home){
-            if (mCurrentFragment != FRAGMENT_HOME){
+        if (id == R.id.nav_home) {
+            if (mCurrentFragment != FRAGMENT_HOME) {
                 replaceFragment(new HomeFragment());
                 mCurrentFragment = FRAGMENT_HOME;
             }
         }
-        if (id == R.id.nav_setting){
-            if (mCurrentFragment != FRAGMENT_SETTING){
+        if (id == R.id.nav_setting) {
+            if (mCurrentFragment != FRAGMENT_SETTING) {
                 replaceFragment(new HomeFragment());
                 mCurrentFragment = FRAGMENT_SETTING;
             }
         }
-        if (id == R.id.nav_profile){
-            if (mCurrentFragment != FRAGMENT_MYPROFILE){
+        if (id == R.id.nav_profile) {
+            if (mCurrentFragment != FRAGMENT_MYPROFILE) {
                 replaceFragment(galleryFragment);
                 mCurrentFragment = FRAGMENT_MYPROFILE;
             }
@@ -260,16 +258,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)){
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
 
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame,fragment);
+        transaction.replace(R.id.content_frame, fragment);
         transaction.commit();
     }
 }
