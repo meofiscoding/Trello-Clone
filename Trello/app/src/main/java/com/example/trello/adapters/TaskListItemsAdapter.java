@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trello.R;
+import com.example.trello.RecycleClick.RecyclerItemClickListener;
 import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
 import com.example.trello.model.Task;
@@ -224,14 +225,19 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
         CartListItemsAdapter adapter = new CartListItemsAdapter(context, model.getCards());
         holder.rv_card_list.setAdapter(adapter);
 
-//        adapter.setOnClickListener(object :
-//        CardListItemsAdapter.OnClickListener {
-//            override fun onClick(cardPosition:Int){
-//                if (context is TaskListActivity){
-//                    context.cardDetails(position, cardPosition)
-//                }
-//            }
-//        })
+            RecyclerView rv = holder.itemView.findViewById(R.id.rv_card_list);
+            rv.addOnItemTouchListener(new RecyclerItemClickListener(context, rv, new RecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int cardPosition) {
+                    if(context instanceof TaskListActivity){
+                        ((TaskListActivity) context).cardDetatils(position,cardPosition);
+                    }
+                }
+
+                @Override
+                public void onLongItemClick(View view, int position) {
+                }
+            }));
 
         /**
          * Creates a divider {@link RecyclerView.ItemDecoration} that can be used with a

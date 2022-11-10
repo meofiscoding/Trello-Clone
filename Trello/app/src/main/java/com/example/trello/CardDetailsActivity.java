@@ -138,8 +138,8 @@ public class CardDetailsActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp);
-            actionBar.setTitle("Test Card");
-            actionBar.setTitle(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
+            actionBar.setTitle("Demo Card");
+            //actionBar.setTitle(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

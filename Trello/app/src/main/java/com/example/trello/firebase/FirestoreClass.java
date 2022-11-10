@@ -319,41 +319,13 @@ public class FirestoreClass {
     }
 
 
-//        HashMap taskListHashMap = new HashMap();
-//        ((Map)taskListHashMap).put("taskList", board.getTaskList());
-//        this.mFireStore.collection("boards").document(board.getDocumentId()).update((Map)taskListHashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void unused) {
-//                Log.e(activity.getClass().getSimpleName(), "TaskList updated successfully.");
-//                if (activity instanceof TaskListActivity) {
-//                    ((TaskListActivity)activity).addUpdateTaskListSuccess();
-//                } else if (activity instanceof CardDetailsActivity) {
-//                    ((CardDetailsActivity)activity).addUpdateTaskListSuccess();
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure( Exception e) {
-//                Log.w("e", "Error updating document", e);
-//            }
-//        });
 
-        mFireStore.collection("tasks").document().set(task, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.e(activity.getClass().getSimpleName(), "Task created successfully.");
-                        Toast.makeText((Context)activity, (CharSequence)"Task created successfully.", Toast.LENGTH_LONG).show();
-                        //activity.boardCreatedSuccessfully();
-                    }
-                }).addOnFailureListener(e->{
-                   // activity.hideProgressDialog();
-                    Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
-                });
+
+
             // $FF: synthetic method
             // $FF: bridge method
 
-    }
+
 
 //    public final void getAssignedMembersListDetails(@NotNull final Activity activity, @NotNull ArrayList assignedTo) {
 //        Intrinsics.checkParameterIsNotNull(activity, "activity");

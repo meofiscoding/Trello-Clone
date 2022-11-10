@@ -289,6 +289,10 @@ public class TaskListActivity extends BaseActivity {
         firestoreClass.addUpdateTaskList(this, task);
         getData();
     }
+    public void cardDetatils(int taskListPosition, int cardPosition){
+        Intent intent = new Intent(this,CardDetailsActivity.class);
+startActivity(intent);
+    }
 
 //    public void updateTaskList(int position,String listName,Task model){
 //        Task task = new Task(listName,model.getCreatedBy());
