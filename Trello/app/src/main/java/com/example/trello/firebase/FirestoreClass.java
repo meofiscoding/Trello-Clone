@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.protobuf.Any;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +45,10 @@ public class FirestoreClass {
                     // activity.hideProgressDialog();
                     Log.e(activity.getClass().getSimpleName(), "Error while creating a board.", (Throwable)e);
                 });
+    }
+
+    public void UpdateTaskList(Activity activity, Board board){
+        HashMap<String, Any> taskListHaspMap;
 
     }
 
@@ -78,7 +83,7 @@ public class FirestoreClass {
     }
 
 
-    public  void getBoardDetails( TaskListActivity activity,  String documentId) {
+    public void getBoardDetails( TaskListActivity activity,  String documentId) {
         this.mFireStore.collection("boards").whereEqualTo("name",documentId).get().addOnSuccessListener(new OnSuccessListener() {
             public void onSuccess(Object var1) {
                 this.onSuccess((QuerySnapshot)var1);
@@ -86,24 +91,35 @@ public class FirestoreClass {
 
             public final void onSuccess(QuerySnapshot document) {
                 Log.e(activity.getClass().getSimpleName(), document.toString());
-               Board board=document.getDocuments().get(0).toObject(Board.class);
+                Board board=document.getDocuments().get(0).toObject(Board.class);
                 //board.setDocumentId(document.getId());
                 activity.boardDetails(board);
             }
         });
     }
 
-    public  void getTaskDetails( TaskListActivity activity,  String board) {
+
+
+    public void updateTaskList(Activity activity, Board board){
+        HashMap<String,ArrayList<Task>> taskListHashMap = new HashMap<>();
+        taskListHashMap.put("taskList",board.getTaskList());
+        mFireStore.collection("boards").document(board.getDocumentId()).update("taskList",board.getTaskList()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        });
+    }
+
+    public void getTaskDetails( TaskListActivity activity,  String board) {
         this.mFireStore.collection("tasks").whereEqualTo("boardname",board).get().addOnSuccessListener(new OnSuccessListener() {
-            // $FF: synthetic method
-            // $FF: bridge method
             public void onSuccess(Object var1) {
                 this.onSuccess((QuerySnapshot)var1);
             }
 
             public final  void onSuccess(QuerySnapshot document) {
                 Log.e(activity.getClass().getSimpleName(), document.toString());
-               // Board board=document.getDocuments().get(0).toObject(Board.class);
+                // Board board=document.getDocuments().get(0).toObject(Board.class);
                 ArrayList<Task> taskArrayList = new ArrayList<Task>();
                 List<DocumentSnapshot> list = document.getDocuments();
                 for (DocumentSnapshot d : list) {
@@ -113,17 +129,46 @@ public class FirestoreClass {
                 }
                 //board.setDocumentId(document.getId());
                 activity.taskDetails(taskArrayList);
+                getCardDetails(activity,taskArrayList);
             }
         });
     }
 
-    public  void getCardDetails( TaskListActivity activity,  ArrayList<Task> tasks) {
+    public void deleteTask(Activity activity,String title){
+        mFireStore.collection("tasks").document("title").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText((Context)activity, (CharSequence)"Task deleted successfully.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public ArrayList<Card> getCardsByTaskname(String taskName){
+
+        ArrayList<Card> cardArrayList = new ArrayList<>();
+        mFireStore.collection("cards").whereEqualTo("taskname", taskName).get().addOnSuccessListener(new OnSuccessListener() {
+            public void onSuccess(Object var1) {
+                this.onSuccess((QuerySnapshot) var1);
+            }
+
+            public final void onSuccess(QuerySnapshot document) {
+
+                List<DocumentSnapshot> list = document.getDocuments();
+                for (DocumentSnapshot d : list) {
+                    Card card = d.toObject(Card.class);
+                    //board.setDocumentId(d.getId());
+                    cardArrayList.add(card);
+                }
+            }
+        });
+        return cardArrayList;
+    }
+    public void getCardDetails( TaskListActivity activity,  ArrayList<Task> tasks) {
         HashMap<String,ArrayList<Card>> listHashMap= new HashMap<>();
         if(tasks!=null) {
             for (Task task : tasks) {
-                this.mFireStore.collection("cards").whereEqualTo("title", task.getTitle()).get().addOnSuccessListener(new OnSuccessListener() {
-                    // $FF: synthetic method
-                    // $FF: bridge method
+                this.mFireStore.collection("cards").whereEqualTo("taskname", task.getTitle()).get().addOnSuccessListener(new OnSuccessListener() {
+
                     public void onSuccess(Object var1) {
                         this.onSuccess((QuerySnapshot) var1);
                     }
@@ -141,10 +186,10 @@ public class FirestoreClass {
                         }
                         listHashMap.put(task.getTitle(), cardArrayList);
                         //board.setDocumentId(document.getId());
-
+                        activity.carddetail(listHashMap);
                     }
                 });
-                activity.carddetail(listHashMap);
+
             }
         }
 
@@ -154,8 +199,8 @@ public class FirestoreClass {
 
 
 
-            // $FF: synthetic method
-            // $FF: bridge method
+    // $FF: synthetic method
+    // $FF: bridge method
 
 
 
