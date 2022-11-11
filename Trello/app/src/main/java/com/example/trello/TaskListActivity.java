@@ -32,6 +32,7 @@ import java.util.HashMap;
 
 
 public class TaskListActivity extends BaseActivity {
+    private String taskName;
     private Board mBoardDetails;
     private String mBoardDocumentId;
     ArrayList mAssignedMembersDetailList;
@@ -57,7 +58,6 @@ public class TaskListActivity extends BaseActivity {
 
 
     private void bindingAction() {
-
 
         rv_task_list.setLayoutManager(new
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -245,10 +245,10 @@ public class TaskListActivity extends BaseActivity {
     }
 
 
-    public void updateTaskList(String taskListName){
+    public void updateTaskList(String taskListName,Task oldTask){
         Task task = new Task(taskListName,FirestoreClass.getCurrentUserID(),mBoardDetails.getName());
         FirestoreClass firestoreClass= new FirestoreClass();
-        //firestoreClass.UpdateTaskList(this, task);
+        firestoreClass.UpdateTaskList(this, taskListName,oldTask);
         getData();
     }
 
@@ -262,6 +262,7 @@ public class TaskListActivity extends BaseActivity {
         Intent intent = new Intent(this, CardDetailsActivity.class);
         Card card = listCards.get(position);
         intent.putExtra("card", card);
+        intent.putExtra("board_detail", mBoardDetails);
         startActivity(intent);
     }
 

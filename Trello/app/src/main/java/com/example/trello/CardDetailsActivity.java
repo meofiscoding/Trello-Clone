@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -70,9 +71,10 @@ public class CardDetailsActivity extends BaseActivity {
         //et_name_card_details.setText(((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getName());
         //et_name_card_details.setSelection(et_name_card_details.getText().toString().length());
         //mSelectedColor = ((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getLabelColor();
-//        if(!mSelectedColor.isEmpty()){
-//            setColor();
-//        }
+        mSelectedColor = card.getLabelColor();
+        if(!(mSelectedColor ==null)){
+            setColor();
+        }
         tv_select_label_color.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,11 +89,14 @@ public class CardDetailsActivity extends BaseActivity {
             }
         });
         //mSelectedDueDateMilliSeconds = ((Card)((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().get(this.mCardPosition)).getDueDate();
-//        if(mSelectedDueDateMilliSeconds>0){
-//            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-//            String date = sdf.format(new Date(mSelectedDueDateMilliSeconds));
-//            tv_select_due_date.setText(date);
-//        }
+        if(card.getDueDate()!=null){
+            mSelectedDueDateMilliSeconds = card.getDueDate();
+            if(mSelectedDueDateMilliSeconds>0){
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String date = sdf.format(new Date(mSelectedDueDateMilliSeconds));
+                tv_select_due_date.setText(date);
+            }
+        }
         tv_select_due_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,7 +181,9 @@ public class CardDetailsActivity extends BaseActivity {
     public void addUpdateTaskListSuccess(){
         //hideProgressDialog();
         setResult(Activity.RESULT_OK);
-        finish();
+        Intent i = new Intent(this,TaskListActivity.class);
+        i.putExtra(Constants.DOCUMENT_ID,mBoardDetails.getName());
+        startActivity(i);
     }
 
     private void updateCardDetails(){

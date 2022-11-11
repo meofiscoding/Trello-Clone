@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdapter.TaskViewHolder> {
-
+    private String taskName;
     private Context context;
     private ArrayList<Task> list;
 
@@ -188,11 +188,14 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
             holder.ib_done_edit_list_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    TextView tv = holder.itemView.findViewById(R.id.tv_task_list_title);
+                    taskName = tv.getText().toString();
+                    Task task = list.stream().filter(c->c.getTitle().equalsIgnoreCase(taskName)).findAny().orElse(null);
                     String listName = holder.et_edit_task_list_name.getText().toString();
 
                     if (!listName.equals("")) {
                         if (context instanceof TaskListActivity){
-                            ((TaskListActivity) context).updateTaskList(listName);
+                            ((TaskListActivity) context).updateTaskList(listName,task);
                             ((TaskListActivity) context).getData();
                         }
                     } else {

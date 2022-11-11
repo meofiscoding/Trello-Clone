@@ -112,7 +112,7 @@ public class MemberActivity extends AppCompatActivity {
     private void assignedMembertoBoard(Board board, User user) {
         var assignedToHashMap = new HashMap<String, Object>();
         assignedToHashMap.put("assignedto",board.getAssignedto());
-        firebaseFirestore.collection("boards").document(board.getDocumentId()).update(assignedToHashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+        firebaseFirestore.collection("boards").document(board.getName()).update(assignedToHashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 assignedMemberList.add(user);

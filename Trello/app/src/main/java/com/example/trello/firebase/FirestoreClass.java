@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.trello.CardDetailsActivity;
 import com.example.trello.Constants;
 import com.example.trello.CreateBoardActivity;
@@ -13,16 +15,16 @@ import com.example.trello.TaskListActivity;
 import com.example.trello.model.Board;
 import com.example.trello.model.Card;
 import com.example.trello.model.Task;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.protobuf.Any;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -66,8 +68,10 @@ public class FirestoreClass {
         docRef.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                DocumentReference docRef2 = mFireStore.collection("cards").document(card.getName()+card.getTaskname());
-                docRef2.delete();
+                if(!(card.getName().equalsIgnoreCase(cardUpdate.getName()))){
+                    DocumentReference docRef2 = mFireStore.collection("cards").document(card.getName()+card.getTaskname());
+                    docRef2.delete();
+                }
                 if(activity instanceof CardDetailsActivity){
                     ((CardDetailsActivity) activity).addUpdateTaskListSuccess();
                 }
@@ -76,8 +80,34 @@ public class FirestoreClass {
         });
     }
 
-    public void UpdateTaskList(Activity activity, Board board){
-        HashMap<String, Any> taskListHaspMap;
+    public void UpdateTaskList(Activity activity, String newName, Task old){
+        if(!newName.equalsIgnoreCase(old.getTitle())){
+            DocumentReference docRef= mFireStore.collection("tasks").document(old.getTitle()+old.getBoardname());
+            HashMap<String, Object> taskListHaspMap = new HashMap<>();
+            taskListHaspMap.put("title",newName);
+            taskListHaspMap.put("createdBy",old.getCreatedBy());
+            taskListHaspMap.put("cards",old.getCards());
+            taskListHaspMap.put("boardname",old.getBoardname());
+            DocumentReference docRef2 = mFireStore.collection("tasks").document(newName+old.getBoardname());
+            docRef.delete();
+            docRef2.set(taskListHaspMap);
+            com.google.android.gms.tasks.Task<QuerySnapshot> query = mFireStore.collection("cards").whereEqualTo("taskname",old.getTitle()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            DocumentReference card = mFireStore.collection("cards").document(document.getId());
+                            Map<String,Object> map = document.getData();
+                            String name= (String)map.get("name");
+                            map.put("taskname",newName);
+                            DocumentReference newCard = mFireStore.collection("cards").document(name+newName);
+                            newCard.set(map);
+                            card.delete();
+                        }
+                    }
+                }
+            });
+        }
 
     }
 

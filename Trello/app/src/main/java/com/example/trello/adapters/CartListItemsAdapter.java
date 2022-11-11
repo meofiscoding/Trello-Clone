@@ -1,6 +1,7 @@
 package com.example.trello.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,15 @@ public class CartListItemsAdapter extends RecyclerView.Adapter<CartListItemsAdap
 
         Card model = list.get(position);
 
-        holder.tv_card_name.setText(model.getName());
+        if(model.getLabelColor()!=null){
+            holder.itemView.findViewById(R.id.view_label_color).setVisibility(View.VISIBLE);
+            holder.itemView.findViewById(R.id.view_label_color).setBackgroundColor(Color.parseColor(model.getLabelColor()));
+        }else{
+            holder.itemView.findViewById(R.id.view_label_color).setVisibility(View.GONE);
+        }
+
+        TextView tv = holder.itemView.findViewById(R.id.tv_card_name);
+        tv.setText(model.getName());
 
 
     }
