@@ -53,6 +53,7 @@ public class CardDetailsActivity extends BaseActivity {
     private Toolbar toolbar;
     private RecyclerView rv_selected_members;
     private Button btn_update;
+    private Button btn_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +114,16 @@ public class CardDetailsActivity extends BaseActivity {
                 }
             }
         });
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(et_name_card_details.getText().toString().isEmpty()){
+                    //Toast.makeText(this,"Enter card name",Toast.LENGTH_SHORT).show();
+                }else{
+                    deleteCardDetails();
+                }
+            }
+        });
     }
 
     private void bindingView() {
@@ -121,8 +132,9 @@ public class CardDetailsActivity extends BaseActivity {
         tv_select_label_color = findViewById(R.id.tv_select_label_color);
         tv_select_members = findViewById(R.id.tv_select_members);
         tv_select_due_date = findViewById(R.id.tv_select_due_date);
-        rv_selected_members = findViewById(R.id.rv_selected_members_list);
+        //rv_selected_members = findViewById(R.id.rv_selected_members_list);
         btn_update = findViewById(R.id.btn_update_card_details);
+        btn_delete = findViewById(R.id.btn_delete_card_details);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -199,6 +211,21 @@ public class CardDetailsActivity extends BaseActivity {
         //showProgressDialog("Please Wait");
         FirestoreClass firestoreClass = new FirestoreClass();
         firestoreClass.updateCard(this, card,cardUpdate);
+    }
+
+    private void deleteCardDetails(){
+        Card cardUpdate = new Card(et_name_card_details.getText().toString()
+                ,card.getCreatedBy()
+                ,card.getAssignedTo()
+                , mSelectedColor
+                ,mSelectedDueDateMilliSeconds
+                ,card.getTaskname());
+//        ArrayList<Task> taskList = mBoardDetails.getTaskList();
+//        taskList.remove(taskList.size()-1);
+//        ((Task)mBoardDetails.getTaskList().get(this.mTaskListPosition)).getCards().set(this.mCardPosition, card);
+        //showProgressDialog("Please Wait");
+        FirestoreClass firestoreClass = new FirestoreClass();
+        firestoreClass.deleteCard(this, card);
     }
 
     private final void deleteCard() {

@@ -87,13 +87,13 @@
                     android:text="@string/select_color"
                     android:textColor="@color/primary_text_color" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/card_details_members_label_marginTop"
-                    android:text="@string/members"
-                    android:textColor="@color/secondary_text_color"
-                    android:textSize="@dimen/card_details_label_text_size" />
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/card_details_members_label_marginTop"-->
+<!--                    android:text="@string/members"-->
+<!--                    android:textColor="@color/secondary_text_color"-->
+<!--                    android:textSize="@dimen/card_details_label_text_size" />-->
 
                 <TextView
                     android:id="@+id/tv_select_members"
@@ -106,13 +106,13 @@
                     android:visibility="visible"
                     tools:visibility="gone" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_selected_members_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/card_details_value_marginTop"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+<!--                <androidx.recyclerview.widget.RecyclerView-->
+<!--                    android:id="@+id/rv_selected_members_list"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/card_details_value_marginTop"-->
+<!--                    android:visibility="gone"-->
+<!--                    tools:visibility="visible" />-->
 
                 <TextView
                     android:layout_width="match_parent"
@@ -143,6 +143,20 @@
                     android:paddingTop="@dimen/btn_paddingTopBottom"
                     android:paddingBottom="@dimen/btn_paddingTopBottom"
                     android:text="@string/update"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/btn_text_size" />
+                <Button
+                    android:id="@+id/btn_delete_card_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/card_details_update_btn_marginTop"
+                    android:background="@drawable/shape_button_rounded"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/btn_paddingTopBottom"
+                    android:paddingBottom="@dimen/btn_paddingTopBottom"
+                    android:text="Delete"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/btn_text_size" />
             </LinearLayout>

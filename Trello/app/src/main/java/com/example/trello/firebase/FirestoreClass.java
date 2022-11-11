@@ -80,6 +80,20 @@ public class FirestoreClass {
         });
     }
 
+    public void deleteCard(Activity activity,Card card){
+        DocumentReference docRef = mFireStore.collection("cards").document(card.getName()+card.getTaskname());
+
+        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                if(activity instanceof CardDetailsActivity){
+                    ((CardDetailsActivity) activity).addUpdateTaskListSuccess();
+                }
+
+            }
+        });
+    }
+
     public void UpdateTaskList(Activity activity, String newName, Task old){
         if(!newName.equalsIgnoreCase(old.getTitle())){
             DocumentReference docRef= mFireStore.collection("tasks").document(old.getTitle()+old.getBoardname());
