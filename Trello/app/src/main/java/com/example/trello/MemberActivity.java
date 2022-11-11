@@ -118,7 +118,6 @@ public class MemberActivity extends AppCompatActivity {
                 assignedMemberList.add(user);
                 anyChange = true;
                 setupMemberList(assignedMemberList);
-                Toast.makeText(MemberActivity.this, user.getName()+" has added to this board successfully!!", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

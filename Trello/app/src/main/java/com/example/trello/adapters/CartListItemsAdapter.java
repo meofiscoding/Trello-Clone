@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class CartListItemsAdapter extends RecyclerView.Adapter<CartListItemsAdapter.CardViewHolder> {
+public class CartListItemsAdapter extends RecyclerView.Adapter<CartListItemsAdapter.CardViewHolder>{
 
     private Context context;
     private ArrayList<Card> list;
@@ -38,7 +38,7 @@ public class CartListItemsAdapter extends RecyclerView.Adapter<CartListItemsAdap
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item_card, parent, false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_card,parent,false);
         return new CartListItemsAdapter.CardViewHolder(v);
     }
 
@@ -47,15 +47,17 @@ public class CartListItemsAdapter extends RecyclerView.Adapter<CartListItemsAdap
 
         Card model = list.get(position);
 
-        if (model.getLabelColor() != null) {
+        if(model.getLabelColor()!=null){
             holder.itemView.findViewById(R.id.view_label_color).setVisibility(View.VISIBLE);
             holder.itemView.findViewById(R.id.view_label_color).setBackgroundColor(Color.parseColor(model.getLabelColor()));
-        } else {
+        }else{
             holder.itemView.findViewById(R.id.view_label_color).setVisibility(View.GONE);
         }
 
         TextView tv = holder.itemView.findViewById(R.id.tv_card_name);
         tv.setText(model.getName());
+
+
     }
 
     @Override
@@ -63,23 +65,8 @@ public class CartListItemsAdapter extends RecyclerView.Adapter<CartListItemsAdap
         return list.size();
     }
 
-    /**
-     * A function for OnClickListener where the Interface is the expected parameter..
-     */
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.setOnClickListener(onClickListener);
-    }
-
-    /**
-     * An interface for onclick items.
-     */
-    interface OnClickListener {
-        public void onClick(int cardposition);
-    }
-
-    public class CardViewHolder extends RecyclerView.ViewHolder {
+    public class CardViewHolder extends RecyclerView.ViewHolder{
         public TextView tv_card_name;
-
         public CardViewHolder(@NotNull View view) {
             super(view);
             tv_card_name = view.findViewById(R.id.tv_card_name);
