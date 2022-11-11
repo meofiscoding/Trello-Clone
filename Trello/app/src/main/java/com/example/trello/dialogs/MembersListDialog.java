@@ -49,19 +49,14 @@ public abstract class MembersListDialog extends Dialog {
         if(list.size()>0){
             rvList.setLayoutManager(new LinearLayoutManager(context));
             MembersListItemAdapter adapter = new MembersListItemAdapter(context);
-            rvList.setAdapter(adapter);
-            rvList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rvList, new RecyclerItemClickListener.OnItemClickListener() {
+            adapter.setOnClickListener(new MembersListItemAdapter.OnClickListener() {
                 @Override
-                public void onItemClick(View view, int position) {
+                public void onItemClick(int position, User user, String action) {
                     dismiss();
-                    onItemSelected(position);
+                    onItemSelected(user,action);
                 }
-
-                @Override
-                public void onLongItemClick(View view, int position) {
-
-                }
-            }));
+            });
+            rvList.setAdapter(adapter);
         }
     }
 
@@ -70,7 +65,7 @@ public abstract class MembersListDialog extends Dialog {
         rvList = v.findViewById(R.id.rvList);
     }
 
-    public abstract void onItemSelected(int position);
+    public abstract void onItemSelected(User user, String action);
 
     public MembersListDialog(@NonNull Context context) {
         super(context);

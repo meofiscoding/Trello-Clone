@@ -252,7 +252,12 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
 
             CartListItemsAdapter adapter = new CartListItemsAdapter(context, model.getCards());
             holder.rv_card_list.setAdapter(adapter);
-
+            adapter.setOnClickListener(new CartListItemsAdapter.OnClickListener() {
+                @Override
+                public void onClick(int cardposition) {
+                    return 
+                }
+            });
             RecyclerView rv = holder.itemView.findViewById(R.id.rv_card_list);
             rv.addOnItemTouchListener(new RecyclerItemClickListener(context, rv, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
@@ -266,15 +271,6 @@ public class TaskListItemsAdapter extends RecyclerView.Adapter<TaskListItemsAdap
                 public void onLongItemClick(View view, int position) {
                 }
             }));
-
-//        adapter.setOnClickListener(object :
-//        CardListItemsAdapter.OnClickListener {
-//            override fun onClick(cardPosition:Int){
-//                if (context is TaskListActivity){
-//                    context.cardDetails(position, cardPosition)
-//                }
-//            }
-//        })
 
             /**
              * Creates a divider {@link RecyclerView.ItemDecoration} that can be used with a
