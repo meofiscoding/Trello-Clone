@@ -233,12 +233,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mCurrentFragment = FRAGMENT_HOME;
             }
         }
-        if (id == R.id.nav_setting) {
-            if (mCurrentFragment != FRAGMENT_SETTING) {
-                replaceFragment(new HomeFragment());
-                mCurrentFragment = FRAGMENT_SETTING;
-            }
-        }
+//        if (id == R.id.nav_setting) {
+//            if (mCurrentFragment != FRAGMENT_SETTING) {
+//                replaceFragment(new HomeFragment());
+//                mCurrentFragment = FRAGMENT_SETTING;
+//            }
+//        }
         if (id == R.id.nav_profile) {
             if (mCurrentFragment != FRAGMENT_MYPROFILE) {
                 replaceFragment(galleryFragment);

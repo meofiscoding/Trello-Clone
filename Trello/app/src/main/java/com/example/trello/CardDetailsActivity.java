@@ -130,7 +130,7 @@ public class CardDetailsActivity extends BaseActivity {
         toolbar = findViewById(R.id.toolbar_card_details_activity);
         et_name_card_details = findViewById(R.id.et_name_card_details);
         tv_select_label_color = findViewById(R.id.tv_select_label_color);
-        tv_select_members = findViewById(R.id.tv_select_members);
+        //tv_select_members = findViewById(R.id.tv_select_members);
         tv_select_due_date = findViewById(R.id.tv_select_due_date);
         //rv_selected_members = findViewById(R.id.rv_selected_members_list);
         btn_update = findViewById(R.id.btn_update_card_details);
